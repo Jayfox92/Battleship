@@ -17,6 +17,13 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+
+    //scen
+    //2d array egen spelplan
+    //2d array motståndarplan
+    //ruta med text (sys.out)
+    //färg kod för träff & miss
+    //delay mellan actions (0-5s)
     public static void main(String[] args) {
         launch();
     }
