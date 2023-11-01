@@ -3,18 +3,51 @@ package com.teamd.battleship;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class HelloApplication extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage primaryStage) throws IOException {
+        primaryStage.setTitle("BattleShip");
+
+        GridPane spelplanSpelareEtt = createSpelplan();
+        GridPane spelplanSpelareTva = createSpelplan();
+
+        VBox spelarLayout = new VBox(50); // Skapar en VBox med 50 pixels avstånd
+        spelarLayout.getChildren().addAll(spelplanSpelareEtt, spelplanSpelareTva);
+
+        Scene scene = new Scene(createLayout(spelarLayout), 500, 600); //
+
+        primaryStage.setScene(scene);
+
+        primaryStage.show();
+    }
+
+    private GridPane createSpelplan() {
+        GridPane gridPane = new GridPane();
+        int size = 10; // Storlek på rutnätet
+        for (int rad = 0; rad < size; rad++) {
+            for (int kolumn = 0; kolumn < size; kolumn++) {
+                Rectangle ruta = new Rectangle(25, 25);
+                ruta.setFill(Color.LIGHTBLUE);
+                ruta.setStroke(Color.BLACK);
+
+                gridPane.add(ruta, kolumn, rad);
+            }
+        }
+        return gridPane;
+    }
+
+    private VBox createLayout(VBox spelarLayout) {
+        VBox layout = new VBox();
+        layout.getChildren().addAll(spelarLayout);
+        return layout;
     }
 
 
