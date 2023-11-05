@@ -1,10 +1,10 @@
 package com.teamd.battleship;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -16,14 +16,25 @@ public class HelloApplication extends Application {
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setTitle("BattleShip");
 
-        GridPane spelplanSpelareEtt = createSpelplan();
-        GridPane spelplanSpelareTva = createSpelplan();
+        AnchorPane anchorPane = new AnchorPane();
 
-        VBox spelarLayout = new VBox(50); // Skapar en VBox med 50 pixels avstånd
-        spelarLayout.getChildren().addAll(spelplanSpelareEtt, spelplanSpelareTva);
+        GridPane playerOne = createSpelplan();
+        GridPane playerTwo = createSpelplan();
 
-        Scene scene = new Scene(createLayout(spelarLayout), 500, 600); //
+        AnchorPane.setTopAnchor(playerOne, 20.0);
+        AnchorPane.setLeftAnchor(playerOne, 20.0);
+        AnchorPane.setBottomAnchor(playerTwo, 20.0);
+        AnchorPane.setLeftAnchor(playerTwo, 20.0);
 
+        Button startaSpelKnapp = new Button("Starta spel");
+        startaSpelKnapp.setOnAction(event -> handleStartGame()); // refererar till handleStartGame
+        startaSpelKnapp.setLayoutX(300);
+        startaSpelKnapp.setLayoutY(295);
+
+
+        anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp);
+
+        Scene scene = new Scene(anchorPane, 500, 600);
         primaryStage.setScene(scene);
 
         primaryStage.show();
@@ -31,32 +42,32 @@ public class HelloApplication extends Application {
 
     private GridPane createSpelplan() {
         GridPane gridPane = new GridPane();
-        int size = 10; // Storlek på rutnätet
+        int size = 10;
         for (int rad = 0; rad < size; rad++) {
             for (int kolumn = 0; kolumn < size; kolumn++) {
-                Rectangle ruta = new Rectangle(25, 25);
-                ruta.setFill(Color.LIGHTBLUE);
-                ruta.setStroke(Color.BLACK);
+                Rectangle pane = new Rectangle(25, 25);
+                pane.setFill(Color.rgb(0,204,204));
+                pane.setStroke(Color.BLACK);
 
-                gridPane.add(ruta, kolumn, rad);
+                pane.setOnMouseEntered(event -> {
+                    pane.setFill(Color.rgb(0,0,112)); // Färg när musen är över rektangeln
+                });
+
+                pane.setOnMouseExited(event -> {
+                    pane.setFill(Color.rgb(0, 204, 204)); // Återställer färgen när musen lämnar rektangeln
+                });
+                gridPane.add(pane, kolumn, rad);
             }
         }
         return gridPane;
     }
 
-    private VBox createLayout(VBox spelarLayout) {
-        VBox layout = new VBox();
-        layout.getChildren().addAll(spelarLayout);
-        return layout;
+    private void handleStartGame() {
+        System.out.println("Spelet startar");
+        // placera spelets logik
+
     }
 
-
-    //scen
-    //2d array egen spelplan
-    //2d array motståndarplan
-    //ruta med text (sys.out)
-    //färg kod för träff & miss
-    //delay mellan actions (0-5s)
     public static void main(String[] args) {
         launch();
     }
