@@ -75,8 +75,8 @@ public class HelloApplication extends Application {
 
         Button startaSpelKnapp = new Button("Starta spel");
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane)); // refererar till handleStartGame
-        startaSpelKnapp.setLayoutX(300);
-        startaSpelKnapp.setLayoutY(290);
+        startaSpelKnapp.setLayoutX(350); //shifted the button a bit to the center
+        startaSpelKnapp.setLayoutY(310); //moved the button along the y-axis as it was overlapping with the Grid
         anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp);
 
         Scene scene = new Scene(anchorPane, 800, 450);
@@ -85,27 +85,39 @@ public class HelloApplication extends Application {
         primaryStage.show();
     }
 
-    private GridPane createSpelplan() { // 2dArray ? ? // lägga till bokstäver y-led o siffor x-led
+    private GridPane createSpelplan() {
         GridPane gridPane = new GridPane();
         int size = 10;
+        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
         for (int rad = 0; rad < size; rad++) {
             for (int kolumn = 0; kolumn < size; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
                 pane.setFill(Color.rgb(0,204,204));
                 pane.setStroke(Color.BLACK);
 
-                pane.setOnMouseEntered(event -> {               //KAn ta bort
-                    pane.setFill(Color.rgb(0,0,112)); // Färg när musen är över rektangeln
+                // Original effects
+                pane.setOnMouseEntered(event -> {
+                    pane.setFill(Color.rgb(0,0,112));
+                });
+                pane.setOnMouseExited(event -> {
+                    pane.setFill(Color.rgb(0, 204, 204));
                 });
 
-                pane.setOnMouseExited(event -> {                //KAn ta bort ??
-                    pane.setFill(Color.rgb(0, 204, 204)); // Återställ färg när musen lämnar rektangeln
-                });
-                gridPane.add(pane, kolumn, rad);
+                gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
             }
         }
+
+        // Add letters and numbers as labels
+        for (int i = 0; i < size; i++) {
+            Text columnLabel = new Text(Integer.toString(i));
+            Text rowLabel = new Text(Character.toString(letters[i]));
+            gridPane.add(columnLabel, i + 1, 0); // Numbers on x-axis
+            gridPane.add(rowLabel, 0, i + 1);    // Letters on y-axis
+        }
+
         return gridPane;
     }
+
 
     private void handleStartGame(AnchorPane anchorPane) {
         System.out.println("Spelet startar");
