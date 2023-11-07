@@ -1,42 +1,95 @@
 package com.teamd.battleship;
 
+import java.util.ArrayList;
+
 public class Battleship {
+    private Skepp spelarensFlotta;
+    private char[][] spelplan;
 
-    //2d array  spelplan
+    public Battleship() {
+        spelplan = new char[10][10];
+        spelarensFlotta = new Skepp();
+        skapaSpelplan();
+        skrivUtSpelplan();
+    }
 
+    public static void main(String[] args) {
+        Battleship game = new Battleship();
+        ArrayList<Skepp> spelarensFlotta = game.skapaFlotta();
+        // Här kan du använda flottan och implementera resten av spelet
+    }
 
+    private void skapaSpelplan() {
+        for (int x = 0; x < spelplan.length; x++) {
+            for (int y = 0; y < spelplan[0].length; y++) {
+                spelplan[x][y] = '-';
+            }
+        }
+    }
 
-    //objekt skepp
+    public void skrivUtSpelplan() {
+        System.out.print("  ");
+        for (int i = 1; i < 11; i++) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
 
+        for (int y = 0; y < 10; y++) {
+            System.out.print((char) ('A' + y) + " ");
+            for (int x = 0; x < 10; x++) {
+                System.out.print(spelplan[x][y] + " ");
+            }
+            System.out.println();
+        }
+    }
 
+    //lista skepp (ArrayList)
+    public ArrayList<Skepp> skapaFlotta() {
+        ArrayList<Skepp> flotta = new ArrayList<>();
 
-    //lista skepp (linked map)
+        // Skapa ett hangarfartyg (5x1)
+        Hangarfartyg hangarfartyg = new Hangarfartyg();
+        flotta.add(hangarfartyg);
 
-    Map<String, Integer> mp = new Map<String,Integer>();
-    mp.put("hangarfatyg", 5);
-    mp.put("slaskepp1", 4);
-    mp.put("slaskepp2", 4);
-    mp.put("Kyrssare1", 3);
-    mp.put("Kyrssare2", 3);
-    mp.put("Kyrssare3", 3);
-    mp.put("Ubåter1", 2);
-    mp.put("Ubåter2", 2);
-    mp.put("Ubåter3", 2);
-    mp.put("Ubåter4", 2);
+        // Skapa två slagskepp (4x1)
+        Slagskepp slagskepp1 = new Slagskepp();
+        Slagskepp slagskepp2 = new Slagskepp();
+        flotta.add(slagskepp1);
+        flotta.add(slagskepp2);
 
-    
+        // Skapa tre kryssare (3x1)
+        Kryssare kryssare1 = new Kryssare();
+        Kryssare kryssare2 = new Kryssare();
+        Kryssare kryssare3 = new Kryssare();
+        flotta.add(kryssare1);
+        flotta.add(kryssare2);
+        flotta.add(kryssare3);
 
-    
+        // Skapa fyra ubåtar (2x1)
+        Ubåt ubåt1 = new Ubåt();
+        Ubåt ubåt2 = new Ubåt();
+        Ubåt ubåt3 = new Ubåt();
+        Ubåt ubåt4 = new Ubåt();
+        flotta.add(ubåt1);
+        flotta.add(ubåt2);
+        flotta.add(ubåt3);
+        flotta.add(ubåt4);
 
-
-
-    //regler placering av skepp
-
-
-
-    //slumpmässigt  skott
-
-
-
-
+        return flotta;
+    }
 }
+
+
+
+
+// Skapa fler instanser av Skepp om det behövs
+
+
+// Markera skeppens positioner med bokstäver
+
+
+
+//slumpmässigt skott
+
+
+
