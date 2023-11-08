@@ -9,6 +9,7 @@ class Skepp {
     private int längd;
     private int skada;
     private ArrayList<String> positioner;
+    private Skepp [] skepps;
 
     public Skepp(String namn, int längd) {
         this.namn = namn;
@@ -32,7 +33,17 @@ class Skepp {
     public int getSkada() {
         return skada;
     }
+    public boolean GameOver(){
 
+        if(ärSänkt()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     */
     public void träffad() {
         skada++;
     }
