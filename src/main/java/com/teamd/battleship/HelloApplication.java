@@ -3,9 +3,11 @@ package com.teamd.battleship;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -87,9 +89,34 @@ public class HelloApplication extends Application {
 
     private GridPane createSpelplan() {
         GridPane gridPane = new GridPane();
+        Battleship battleship = new Battleship();
+        battleship.shipPlacement();
         int size = 10;
         char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
-        for (int rad = 0; rad < size; rad++) {
+        for (int rad = 0; rad < battleship.mapSizeY; rad++) {
+            for (int kolumn = 0; kolumn < battleship.mapSizeX; kolumn++) {
+                Rectangle pane = new Rectangle(22, 22);
+                
+                pane.setFill(Color.rgb(0,204,204));
+                pane.setStroke(Color.BLACK);
+
+                // Original effects
+                pane.setOnMouseEntered(event -> {
+                    pane.setFill(Color.rgb(0,0,112));
+                });
+                pane.setOnMouseExited(event -> {
+                    pane.setFill(Color.rgb(0, 204, 204));
+                });
+                StackPane stackPane = new StackPane();
+                stackPane.getChildren().addAll(pane);
+                String temp[][] = battleship.getMap();
+                Label label = new Label(temp[rad][kolumn]);
+                stackPane.getChildren().addAll(label);
+
+                gridPane.add(stackPane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
+            }
+        }
+        /*for (int rad = 0; rad < size; rad++) {
             for (int kolumn = 0; kolumn < size; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
                 pane.setFill(Color.rgb(0,204,204));
@@ -105,7 +132,8 @@ public class HelloApplication extends Application {
 
                 gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
             }
-        }
+        }*/
+
 
         // Add letters and numbers as labels
         for (int i = 0; i < size; i++) {
