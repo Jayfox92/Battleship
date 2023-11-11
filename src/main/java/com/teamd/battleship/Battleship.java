@@ -160,7 +160,10 @@ public class Battleship {
         return flotta;
     }
 
-    public static void shipPlacement() {
+    public String[][] getMap(){
+        return map;
+    }
+    public void shipPlacement() {
 
         // Skapa objekt
 
