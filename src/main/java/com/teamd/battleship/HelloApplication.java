@@ -3,9 +3,10 @@ package com.teamd.battleship;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -67,16 +68,12 @@ public class HelloApplication extends Application {
         GridPane playerOne = createSpelplan();
         GridPane playerTwo = createSpelplan();
 
-        playerOne.setLayoutX(125);
-        playerOne.setLayoutY(45);
-        playerTwo.setLayoutX(420);
-        playerTwo.setLayoutY(45);
-
+        PositionGameBoards(playerOne,playerTwo);
 
         Button startaSpelKnapp = new Button("Starta spel");
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane)); // refererar till handleStartGame
-        startaSpelKnapp.setLayoutX(300);
-        startaSpelKnapp.setLayoutY(290);
+        layoutStartGameButton(startaSpelKnapp);
+
         anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp);
 
         Scene scene = new Scene(anchorPane, 800, 450);
@@ -84,38 +81,86 @@ public class HelloApplication extends Application {
 
         primaryStage.show();
     }
+    private  void PositionGameBoards(GridPane playerOne, GridPane playerTwo){ // här också
+        playerOne.setLayoutX(125);
+        playerOne.setLayoutY(45);
+        playerTwo.setLayoutX(420);
+        playerTwo.setLayoutY(45);
+    }
+    private void layoutStartGameButton(Button startaSpelKnapp){ //gör det enklare
+        startaSpelKnapp.setLayoutX(350);
+        startaSpelKnapp.setLayoutY(310);
+    }
 
-    private GridPane createSpelplan() { // 2dArray ? ? // lägga till bokstäver y-led o siffor x-led
+    private GridPane createSpelplan() {
         GridPane gridPane = new GridPane();
+        Battleship battleship = new Battleship();
+        battleship.shipPlacement();
         int size = 10;
-        for (int rad = 0; rad < size; rad++) {
-            for (int kolumn = 0; kolumn < size; kolumn++) {
+        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
+        for (int rad = 0; rad < battleship.mapSizeY; rad++) {
+            for (int kolumn = 0; kolumn < battleship.mapSizeX; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
-                pane.setFill(Color.rgb(0,204,204));
+
+                pane.setFill(Color.rgb(0, 204, 204));
                 pane.setStroke(Color.BLACK);
 
-                pane.setOnMouseEntered(event -> {               //KAn ta bort
-                    pane.setFill(Color.rgb(0,0,112)); // Färg när musen är över rektangeln
+                // Original effects
+                pane.setOnMouseEntered(event -> {
+                    pane.setFill(Color.rgb(0, 0, 112));
                 });
+                pane.setOnMouseExited(event -> {
+                    pane.setFill(Color.rgb(0, 204, 204));
+                });
+                StackPane stackPane = new StackPane();
+                stackPane.getChildren().addAll(pane);
+                String temp[][] = battleship.getMap();
+                Label label = new Label(temp[rad][kolumn]);
+                stackPane.getChildren().addAll(label);
 
-                pane.setOnMouseExited(event -> {                //KAn ta bort ??
-                    pane.setFill(Color.rgb(0, 204, 204)); // Återställ färg när musen lämnar rektangeln
-                });
-                gridPane.add(pane, kolumn, rad);
+                gridPane.add(stackPane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
+
+
+                switch (temp[rad][kolumn]) {
+                    case "1":
+                        pane.setFill(Color.RED);
+
+                        break;
+                    case "2":
+                        pane.setFill(Color.BLUE);
+
+                        break;
+                    case "3":
+                        pane.setFill(Color.GREEN);
+                        break;
+                    case "4":
+                        pane.setFill(Color.ORANGE);
+                        break;
+                    case "5":
+                        pane.setFill(Color.ORANGE);{
+                            break;
+                    }
+                }
+
+
+
             }
         }
+
+        // Add letters and numbers as labels
+        for (int i = 0; i < size; i++) {
+            Text columnLabel = new Text(Integer.toString(i));
+            Text rowLabel = new Text(Character.toString(letters[i]));
+            gridPane.add(columnLabel, i + 1, 0); // Numbers on x-axis
+            gridPane.add(rowLabel, 0, i + 1);    // Letters on y-axis
+        }
+
         return gridPane;
     }
 
-    private void handleStartGame(AnchorPane anchorPane) {
+
+      private void handleStartGame(AnchorPane anchorPane) {
         System.out.println("Spelet startar");
-        TextField textField = new TextField();
-        textField.setPromptText("Skriv in "); // skapar textfield för när spelet startar
-        textField.setLayoutX(20);
-        textField.setLayoutY(243);
-        System.out.println(textField);
-        anchorPane.getChildren().add(textField);
-        // placera spelets logik
 
     }
 
