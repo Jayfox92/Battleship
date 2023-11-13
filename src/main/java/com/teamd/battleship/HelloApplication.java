@@ -155,15 +155,16 @@ public class HelloApplication extends Application {
     }
         private void handleStartGame(AnchorPane anchorPane) {
         // Randomise the setting
-        placeShips(playerOneFleet);
-            placeShips(playerTwoFleet);
+        placeShips(playerOne, playerOneFleet);
+        placeShips(playerTwo, playerTwoFleet);
 
     }
 
-    private void placeShips(ArrayList<Skepp> fleet){
+    private void placeShips(GridPane playerBoard, ArrayList<Skepp> fleet){
         // Get random point on board
         Random rand = new Random();
         int x, y, shipLength;
+        int start = 0, fixed = 0;
         boolean horizontal = false;
 
         for(int i = 0; i < 10; i++) {
@@ -171,33 +172,41 @@ public class HelloApplication extends Application {
             while (!pointOK) {
                 x = rand.nextInt(10);
                 y = rand.nextInt(10);
-                shipLength= fleet.get(i).getLängd();
+                shipLength = fleet.get(i).getLängd();
 
                 // check if ship fits left, up, right, down
                 if (x - shipLength >= 0) {
                     // Check left
                     horizontal = true;
-                    pointOK = checkBoard(x - shipLength, x, horizontal);
-
+                    start = x - shipLength;
+                    fixed = y;
+                    pointOK = checkBoard(start, x, horizontal);
                 }
                 if (!pointOK && (y - shipLength >= 0)) {
                     // Check up
                     horizontal = false;
-                    pointOK = checkBoard(y - shipLength, y, horizontal);
+                    start = y - shipLength;
+                    fixed = x;
+                    pointOK = checkBoard(start, y, horizontal);
+
                 }
                 if (!pointOK && (x - shipLength < 0)) {
                     // Check right
                     horizontal = true;
-                    pointOK = checkBoard(x, x + shipLength, horizontal);
+                    start = x;
+                    fixed = y;
+                    pointOK = checkBoard(start, x + shipLength, horizontal);
                 }
                 if (!pointOK && (y - shipLength < 0)) {
                     // Check down
                     horizontal = false;
-                    pointOK = checkBoard(y, y + shipLength, horizontal);
+                    start = y;
+                    fixed = x;
+                    pointOK = checkBoard(start, y + shipLength, horizontal);
                 }
 
             if (pointOK) {
-                drawShipOnBoard(x - shipLength, x, horizontal);
+                drawShipOnBoard(playerBoard, start, shipLength, fixed, horizontal);
             }
             }
 
@@ -218,8 +227,23 @@ public class HelloApplication extends Application {
         return pointOK;
     }
 
-    private void drawShipOnBoard(int start, int end, boolean horizontal) {
+    private void drawShipOnBoard(GridPane playerBoard, int start, int shipLength, int fixedAxis, boolean horizontal) {
 
+        Rectangle pane = new Rectangle(22, 22);
+        pane.setFill(Color.rgb(34, 139, 34));
+        pane.setStroke(Color.BLUE);
+        int x, y;
 
+        for (int i = start; i < start + shipLength; i++) {
+            if (horizontal) {
+                x = i + 1;
+                y = fixedAxis + 1;
+            }
+            else {
+                x = fixedAxis + 1;
+                y = i + 1;
+            }
+            playerBoard.add(pane, x, y); // Shifted by 1 to make space for labels
+        }
     }
 }
