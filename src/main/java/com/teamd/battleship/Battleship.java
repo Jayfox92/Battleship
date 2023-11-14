@@ -130,8 +130,8 @@ public class Battleship {
 
         // Varibler
 
-        int totalTries = 0;
-        int tries = 0;
+        int reset = 0;
+        int placementTries = 0;
         mapSizeX = 10;
         mapSizeY = 10;
         String water = "▓";
@@ -140,8 +140,6 @@ public class Battleship {
         // Skapa karta (2D-array)
 
         map = new String[mapSizeY][mapSizeX];
-
-
 
 
         // Skriva ut tecken för vatten på kartan
@@ -170,6 +168,18 @@ public class Battleship {
             while (!successfulPlacement) {
                 int collision = 0;
                 boolean horizontalAlignment = random.nextBoolean();
+                placementTries ++;
+                if (placementTries > 1000) {
+                    i = -1;
+                    reset ++;
+                    placementTries = 0;
+                    for (int j = 0; j < mapSizeY; j++) {
+                        for (int k = 0; k < mapSizeX; k++) {
+                            map[j][k] = water;
+                        }
+                    }
+                    break;
+                }
 
 
                 // Kodfält vid horisontell utplacering
@@ -270,10 +280,11 @@ public class Battleship {
 
         for (int i = 0; i < mapSizeY; i++) {
             for (int j = 0; j < mapSizeX; j++) {
-                //System.out.print(map[i][j] + " ");
+                // System.out.print(map[i][j] + " ");
             }
-            //System.out.println();
+            // System.out.println();
         }
+        // System.out.println("\nUtplacering " + "färdig efter " + (reset * 1000 + placementTries) + " st försök (" + reset + " nollställningar).");
     }
 
 }
