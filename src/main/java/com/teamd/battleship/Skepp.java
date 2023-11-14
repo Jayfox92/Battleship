@@ -33,13 +33,7 @@ class Skepp {
     public int getSkada() {
         return skada;
     }
-    public boolean GameOver(){
 
-        if(ärSänkt()) {
-            return true;
-        }
-        return false;
-    }
 
     /**
      *
@@ -48,9 +42,7 @@ class Skepp {
         skada++;
     }
 
-    public boolean ärSänkt() {
-        return skada >= längd;
-    }
+
 
     public void läggTillPosition(String position) {
         positioner.add(position);

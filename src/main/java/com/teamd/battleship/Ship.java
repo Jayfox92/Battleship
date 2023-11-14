@@ -19,6 +19,18 @@ public class Ship {
         return length;
     }
 
+    public boolean GameOver(){
+
+        if(ärSänkt()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean ärSänkt() {
+        return hits >= length;
+    }
+
     public void setLength(int length) {
         this.length = length;
     }
