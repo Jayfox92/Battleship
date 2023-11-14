@@ -100,7 +100,7 @@ public class HelloApplication extends Application {
                 pane.setFill(Color.rgb(0,204,204));
                 pane.setStroke(Color.BLACK);
 
-                // Original effects
+
                 pane.setOnMouseEntered(event -> {
                     pane.setFill(Color.rgb(0,0,112));
                 });
@@ -111,7 +111,19 @@ public class HelloApplication extends Application {
                 stackPane.getChildren().addAll(pane);
                 String temp[][] = battleship.getMap();
                 Label label = new Label(temp[rad][kolumn]);
+                label.setOnMouseEntered(event -> {
+                    pane.setFill(Color.rgb(0,0,112));
+                });
+                label.setOnMouseExited(event -> {
+                    pane.setFill(Color.rgb(0, 204, 204));
+                });
                 stackPane.getChildren().addAll(label);
+                stackPane.setOnMouseEntered(event -> {
+                    pane.setFill(Color.rgb(0,0,112));
+                });
+                stackPane.setOnMouseExited(event -> {
+                    pane.setFill(Color.rgb(0, 204, 204));
+                });
 
                 gridPane.add(stackPane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
             }
