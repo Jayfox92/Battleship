@@ -13,6 +13,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class HelloApplication extends Application {
 
     private Stage primaryStage;
@@ -110,7 +112,12 @@ public class HelloApplication extends Application {
                 StackPane stackPane = new StackPane();
                 stackPane.getChildren().addAll(pane);
                 String temp[][] = battleship.getMap();
-                Label label = new Label(temp[rad][kolumn]);
+                Label label = new Label();
+
+                if(!Objects.equals(temp[rad][kolumn], "s")) {
+                    label.setText(temp[rad][kolumn]);
+
+                }
                 label.setOnMouseEntered(event -> {
                     pane.setFill(Color.rgb(0,0,112));
                 });
