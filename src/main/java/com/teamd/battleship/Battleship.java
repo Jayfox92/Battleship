@@ -5,6 +5,30 @@ import java.util.*;
 
 public class Battleship {
 
+    Ship ship1 = new Ship(5, "s0", "hangarfartyg");
+    Ship ship2 = new Ship(4, "s1", "slagskepp");
+    Ship ship3 = new Ship(4, "s2", "slagskepp");
+    Ship ship4 = new Ship(3, "s3", "kryssare");
+    Ship ship5 = new Ship(3, "s4", "kryssare");
+    Ship ship6 = new Ship(3, "s5", "kryssare");
+    Ship ship7 = new Ship(2, "s6", "ubåt");
+    Ship ship8 = new Ship(2, "s7", "ubåt");
+    Ship ship9 = new Ship(2, "s8", "ubåt");
+    Ship ship10 = new Ship(2, "s9", "ubåt");
+
+
+    List<Ship> shipList = new ArrayList<>();
+
+
+
+
+
+
+
+
+
+
+
     String[][] map;
     int mapSizeX;
     int mapSizeY;
