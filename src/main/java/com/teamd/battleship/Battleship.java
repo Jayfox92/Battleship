@@ -37,10 +37,10 @@ public class Battleship {
             J{"","","","","","","","","","",},
     };*/
     private boolean gameActive = false;
-    public char readFirstLetter(String message) { // detta läser första bokstaven som enl. protokoll kommer kunna identifiera vilken 'action' som görs
+    public void readFirstLetter(String message) { // detta läser första bokstaven som enl. protokoll kommer kunna identifiera vilken 'action' som görs
         message = message.trim();
         message = message.toLowerCase();
-        return message.charAt(0);
+        decideNextAction(message.charAt(0));
     }
 
 
