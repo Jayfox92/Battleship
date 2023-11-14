@@ -1,6 +1,9 @@
 package com.teamd.battleship;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ship {
 
     private int length;
@@ -9,6 +12,7 @@ public class Ship {
     private int hits = 0;
     private String name;
     private String description;
+    private List<Integer> coordinatesOfShip = new ArrayList<>();
 
     public Ship(int length, String name, String description) {
         this.length = length;
@@ -21,13 +25,13 @@ public class Ship {
 
     public boolean GameOver(){
 
-        if(ärSänkt()) {
+        if(isSunk()) {
             return true;
         }
         return false;
     }
 
-    public boolean ärSänkt() {
+    public boolean isSunk() {
         return hits >= length;
     }
 
@@ -74,4 +78,18 @@ public class Ship {
     public void setDescription(String description) {
         this.description = description;
     }
-}
+
+    public void setCoordinatesOfShip(int y, int x){
+        coordinatesOfShip.add(y);
+        coordinatesOfShip.add(x);
+    }
+    public List<Integer> getCoordinatesOfShip(){
+        return coordinatesOfShip;
+
+    }
+
+
+
+
+
+    }
