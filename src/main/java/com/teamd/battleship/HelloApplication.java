@@ -1,6 +1,8 @@
 package com.teamd.battleship;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,16 +15,24 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class HelloApplication extends Application {
 
     private Stage primaryStage;
+    GridPane playerOne;
+    GridPane playerTwo;
+    ArrayList<Skepp> playerOneFleet;
+    ArrayList<Skepp> playerTwoFleet;
     public static void main(String[] args) {
         launch();
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("view/InputView.fxml"));
         this.primaryStage = primaryStage;
-        FirstScene();
+        SecondScene();
     }
     private void FirstScene() {
         primaryStage.setTitle("BattleShip");
@@ -66,16 +76,18 @@ public class HelloApplication extends Application {
 
         AnchorPane anchorPane = new AnchorPane();
 
-        GridPane playerOne = createSpelplan();
-        GridPane playerTwo = createSpelplan();
+        // Create board and fleet for the two players
+        playerOne = createSpelplan();
+        playerTwo = createSpelplan();
+        playerOneFleet = createFleet();
+        playerTwoFleet = createFleet();
 
         playerOne.setLayoutX(125);
         playerOne.setLayoutY(45);
         playerTwo.setLayoutX(420);
         playerTwo.setLayoutY(45);
 
-
-        Button startaSpelKnapp = new Button("Starta spel");
+        Button startaSpelKnapp = new Button("Start: Set boards");
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane)); // refererar till handleStartGame
         startaSpelKnapp.setLayoutX(350); //shifted the button a bit to the center
         startaSpelKnapp.setLayoutY(310); //moved the button along the y-axis as it was overlapping with the Grid
@@ -159,17 +171,118 @@ public class HelloApplication extends Application {
     }
 
 
-    private void handleStartGame(AnchorPane anchorPane) {
-        System.out.println("Spelet startar");
-        TextField textField = new TextField();
-        textField.setPromptText("Skriv in "); // skapar textfield för när spelet startar
-        textField.setLayoutX(20);
-        textField.setLayoutY(243);
-        System.out.println(textField);
-        anchorPane.getChildren().add(textField);
-        // placera spelets logik
+    private ArrayList<Skepp> createFleet() {
+        /*
+         * • ett hangarfartyg (5x1 ruta)
+         * • två slagskepp (4x1 ruta)
+         * • tre kryssare (3x1 ruta)
+         * • fyra ubåtar (2x1 ruta)
+         * Add a list of ships to place on the grid
+         */
+        ArrayList<Skepp> fleet = new ArrayList<>();
+        fleet.add(new Hangarfartyg());
+        fleet.add(new Slagskepp());
+        fleet.add(new Slagskepp());
+        fleet.add(new Kryssare());
+        fleet.add(new Kryssare());
+        fleet.add(new Kryssare());
+        fleet.add(new Ubåt());
+        fleet.add(new Ubåt());
+        fleet.add(new Ubåt());
+        fleet.add(new Ubåt());
+        return fleet;
+    }
+        private void handleStartGame(AnchorPane anchorPane) {
+        // Randomise the setting
+        placeShips(playerOne, playerOneFleet);
+        placeShips(playerTwo, playerTwoFleet);
 
     }
 
+    private void placeShips(GridPane playerBoard, ArrayList<Skepp> fleet){
+        // Get random point on board
+        Random rand = new Random();
+        int x, y, shipLength;
+        int start = 0, fixed = 0;
+        boolean horizontal = false;
 
+        for(int i = 0; i < 10; i++) {
+            boolean pointOK = false;
+            while (!pointOK) {
+                x = rand.nextInt(10);
+                y = rand.nextInt(10);
+                shipLength = fleet.get(i).getLängd();
+
+                // check if ship fits left, up, right, down
+                if (x - shipLength >= 0) {
+                    // Check left
+                    horizontal = true;
+                    start = x - shipLength;
+                    fixed = y;
+                    pointOK = checkBoard(start, x, horizontal);
+                }
+                if (!pointOK && (y - shipLength >= 0)) {
+                    // Check up
+                    horizontal = false;
+                    start = y - shipLength;
+                    fixed = x;
+                    pointOK = checkBoard(start, y, horizontal);
+
+                }
+                if (!pointOK && (x - shipLength < 0)) {
+                    // Check right
+                    horizontal = true;
+                    start = x;
+                    fixed = y;
+                    pointOK = checkBoard(start, x + shipLength, horizontal);
+                }
+                if (!pointOK && (y - shipLength < 0)) {
+                    // Check down
+                    horizontal = false;
+                    start = y;
+                    fixed = x;
+                    pointOK = checkBoard(start, y + shipLength, horizontal);
+                }
+
+            if (pointOK) {
+                drawShipOnBoard(playerBoard, start, shipLength, fixed, horizontal);
+            }
+            }
+
+        }
+
+    }
+    private boolean checkBoard(int start, int end, boolean horizontal) {
+        boolean pointOK = true;
+
+        // START: consider x and y as input, maybe remove horizontal?
+        if (horizontal){
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                }
+            }
+
+        }
+        return pointOK;
+    }
+
+    private void drawShipOnBoard(GridPane playerBoard, int start, int shipLength, int fixedAxis, boolean horizontal) {
+
+        Rectangle pane = new Rectangle(22, 22);
+        pane.setFill(Color.rgb(34, 139, 34));
+        pane.setStroke(Color.BLUE);
+        int x, y;
+
+        for (int i = start; i < start + shipLength; i++) {
+            if (horizontal) {
+                x = i + 1;
+                y = fixedAxis + 1;
+            }
+            else {
+                x = fixedAxis + 1;
+                y = i + 1;
+            }
+            playerBoard.add(pane, x, y); // Shifted by 1 to make space for labels
+        }
+    }
 }
