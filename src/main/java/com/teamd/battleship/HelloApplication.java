@@ -3,6 +3,7 @@ package com.teamd.battleship;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,6 +26,7 @@ public class HelloApplication extends Application {
     GridPane playerTwo;
     ArrayList<Skepp> playerOneFleet;
     ArrayList<Skepp> playerTwoFleet;
+    Button startaSpelKnapp;
     public static void main(String[] args) {
         launch();
     }
@@ -86,7 +89,7 @@ public class HelloApplication extends Application {
         playerTwo.setLayoutX(420);
         playerTwo.setLayoutY(45);
 
-        Button startaSpelKnapp = new Button("Start: Set boards");
+        startaSpelKnapp = new Button("Start: Set boards");
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane)); // refererar till handleStartGame
         startaSpelKnapp.setLayoutX(350); //shifted the button a bit to the center
         startaSpelKnapp.setLayoutY(310); //moved the button along the y-axis as it was overlapping with the Grid
@@ -96,6 +99,7 @@ public class HelloApplication extends Application {
         primaryStage.setScene(scene);
 
         primaryStage.show();
+
     }
 
     private GridPane createSpelplan() {
@@ -107,14 +111,6 @@ public class HelloApplication extends Application {
                 Rectangle pane = new Rectangle(22, 22);
                 pane.setFill(Color.rgb(0,204,204));
                 pane.setStroke(Color.BLACK);
-
-                // Original effects
-                pane.setOnMouseEntered(event -> {
-                    pane.setFill(Color.rgb(0,0,112));
-                });
-                pane.setOnMouseExited(event -> {
-                    pane.setFill(Color.rgb(0, 204, 204));
-                });
 
                 gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
             }
@@ -151,12 +147,15 @@ public class HelloApplication extends Application {
         fleet.add(new Ubåt());
         fleet.add(new Ubåt());
         fleet.add(new Ubåt());
+
         return fleet;
     }
-        private void handleStartGame(AnchorPane anchorPane) {
+    private void handleStartGame(AnchorPane anchorPane) {
         // Randomise the setting
         placeShips(playerOne, playerOneFleet);
         placeShips(playerTwo, playerTwoFleet);
+        // Disable the button after setting the boards.
+        startaSpelKnapp.setDisable(true);
 
     }
 
@@ -180,14 +179,14 @@ public class HelloApplication extends Application {
                     horizontal = true;
                     start = x - shipLength;
                     fixed = y;
-                    pointOK = checkBoard(start, x, horizontal);
+                    pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
                 }
                 if (!pointOK && (y - shipLength >= 0)) {
                     // Check up
                     horizontal = false;
                     start = y - shipLength;
                     fixed = x;
-                    pointOK = checkBoard(start, y, horizontal);
+                    pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
 
                 }
                 if (!pointOK && (x - shipLength < 0)) {
@@ -195,44 +194,28 @@ public class HelloApplication extends Application {
                     horizontal = true;
                     start = x;
                     fixed = y;
-                    pointOK = checkBoard(start, x + shipLength, horizontal);
+                    pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
                 }
                 if (!pointOK && (y - shipLength < 0)) {
                     // Check down
                     horizontal = false;
                     start = y;
                     fixed = x;
-                    pointOK = checkBoard(start, y + shipLength, horizontal);
+                    pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
                 }
 
-            if (pointOK) {
-                drawShipOnBoard(playerBoard, start, shipLength, fixed, horizontal);
-            }
+                if (pointOK) {
+                    drawShipOnBoard(playerBoard, start, shipLength, fixed, horizontal);
+                }
             }
 
         }
 
     }
-    private boolean checkBoard(int start, int end, boolean horizontal) {
+    private boolean checkBoard(GridPane playerBoard, int start, int shipLength, int fixedAxis, boolean horizontal) {
         boolean pointOK = true;
-
-        // START: consider x and y as input, maybe remove horizontal?
-        if (horizontal){
-            for (int i = 0; i < 10; i++) {
-                for (int j = 0; j < 10; j++) {
-                }
-            }
-
-        }
-        return pointOK;
-    }
-
-    private void drawShipOnBoard(GridPane playerBoard, int start, int shipLength, int fixedAxis, boolean horizontal) {
-
-        Rectangle pane = new Rectangle(22, 22);
-        pane.setFill(Color.rgb(34, 139, 34));
-        pane.setStroke(Color.BLUE);
         int x, y;
+        ObservableList<Node> children = playerBoard.getChildren();
 
         for (int i = start; i < start + shipLength; i++) {
             if (horizontal) {
@@ -243,7 +226,44 @@ public class HelloApplication extends Application {
                 x = fixedAxis + 1;
                 y = i + 1;
             }
-            playerBoard.add(pane, x, y); // Shifted by 1 to make space for labels
+
+            // Check if the rectangles in the range have a ship already
+            for (Node node : children) {
+                if(GridPane.getRowIndex(node) == x && GridPane.getColumnIndex(node) == y) {
+                    Rectangle rect = (Rectangle) node;
+                    if (rect.getFill().equals(Color.DARKGREEN)) {
+                        pointOK = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return pointOK;
+    }
+
+    private void drawShipOnBoard(GridPane playerBoard, int start, int shipLength, int fixedAxis, boolean horizontal) {
+
+        int x, y;
+        for (int i = start; i < start + shipLength; i++) {
+            if (horizontal) {
+                x = i + 1;
+                y = fixedAxis + 1;
+            }
+            else {
+                x = fixedAxis + 1;
+                y = i + 1;
+            }
+
+            // Update the color of the rectangle at x,y
+            ObservableList<Node> children = playerBoard.getChildren();
+            for (Node node : children) {
+                if(GridPane.getRowIndex(node) == x && GridPane.getColumnIndex(node) == y) {
+                    Rectangle rect = (Rectangle) node;
+                    rect.setFill(Color.DARKGREEN);
+                    rect.setStroke(Color.BLUE);
+                    break;
+                }
+            }
         }
     }
 }

@@ -1,24 +1,25 @@
 package com.teamd.battleship;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import javafx.scene.paint.Color;
 
+import java.util.*;
 
 
 public class Battleship {
     private Skepp spelarensFlotta;
     private char[][] spelplan;
 
-
+    String[][] map;
+    int mapSizeX;
+    int mapSizeY;
+    String water;
 
 
     public Battleship() {
         spelplan = new char[10][10];
         spelarensFlotta = new Skepp();
-        skapaSpelplan();
-        skrivUtSpelplan();
+        //skapaSpelplan();
+        //skrivUtSpelplan();
     }
 
     public static void main(String[] args) {
@@ -27,7 +28,76 @@ public class Battleship {
         // Här kan du använda flottan och implementera resten av spelet
 
         System.out.println();
-        shipPlacement();
+        //shipPlacement();
+    }
+
+    private String[][] gameBoard = new String[10][10];/*{
+            A{"A0","1","2","3","4","5","6","7","8","9",},
+            B{"B","","","","","","","","","",},
+            C{"C","","","","","","","","","",},
+            D{"D","","","","","","","","","",},
+            {"E","","","","","","","","","",},
+            {"F","","","","","","","","","",},
+            {"G","","","","","","","","","",},
+            {"H","","","","","","","","","",},
+            {"I","","","","","","","","","",},
+            {"J","","","","","","","","","",},
+    };*/
+    private boolean gameActive = false;
+    public char readFirstLetter(String message) { // detta läser första bokstaven som enl. protokoll kommer kunna identifiera vilken 'action' som görs
+        message = message.trim();
+        message = message.toLowerCase();
+        return message.charAt(0);
+    }
+
+
+    public void decideNextAction(char action){
+        Random random = new Random();
+        if (action=='i'){ //init
+
+
+        }
+        else if (action=='h'){//shot hit
+
+        }
+        else if (action=='m'){//shot miss
+
+        }
+        else if (action=='s'){//shot sänkt
+
+        }
+        else if (action=='g'){//game over
+
+        }
+        else System.out.println("Issue reading protocol");
+    }
+
+
+
+    public List<Integer> readCoordinates(String string){ // Y-koordinat lagras i index 0, X-koordinat lagras i index 1, returneras som en arraylist
+        List<Integer> listOfShotCoordinates = new ArrayList<>();
+        string = string.trim();
+        string = string.toLowerCase();
+        Map<Character, Integer> charsMappedToInt = new HashMap<>();
+        charsMappedToInt.put('a',0);
+        charsMappedToInt.put('b',1);
+        charsMappedToInt.put('c',2);
+        charsMappedToInt.put('d',3);
+        charsMappedToInt.put('e',4);
+        charsMappedToInt.put('f',5);
+        charsMappedToInt.put('g',6);
+        charsMappedToInt.put('h',7);
+        charsMappedToInt.put('i',8);
+        charsMappedToInt.put('j',9);
+        char findPosOfY = string.charAt((string.length()-1));
+        int yCoordinate = charsMappedToInt.get(findPosOfY);
+        listOfShotCoordinates.add(yCoordinate);
+        char findPosOfX = string.charAt((string.length()-2));
+        int xCooordinate = Character.getNumericValue(findPosOfX);
+        listOfShotCoordinates.add(xCooordinate);
+
+        return listOfShotCoordinates;
+
     }
 
     private void skapaSpelplan() {
@@ -89,7 +159,10 @@ public class Battleship {
         return flotta;
     }
 
-    public static void shipPlacement() {
+    public String[][] getMap(){
+        return map;
+    }
+    public void shipPlacement() {
 
         // Skapa objekt
 
@@ -122,16 +195,18 @@ public class Battleship {
 
         // Varibler
 
-        int reset = 0;
-        int placementTries = 0;
-        int mapSizeX = 10;
-        int mapSizeY = 10;
+        int totalTries = 0;
+        int tries = 0;
+        mapSizeX = 10;
+        mapSizeY = 10;
         String water = "▓";
 
 
         // Skapa karta (2D-array)
 
-        String[][] map = new String[mapSizeY][mapSizeX];
+        map = new String[mapSizeY][mapSizeX];
+
+
 
 
         // Skriva ut tecken för vatten på kartan
@@ -160,18 +235,6 @@ public class Battleship {
             while (!successfulPlacement) {
                 int collision = 0;
                 boolean horizontalAlignment = random.nextBoolean();
-                placementTries ++;
-                if (placementTries > 1000) {
-                    i = -1;
-                    reset ++;
-                    placementTries = 0;
-                    for (int j = 0; j < mapSizeY; j++) {
-                        for (int k = 0; k < mapSizeX; k++) {
-                            map[j][k] = water;
-                        }
-                    }
-                    break;
-                }
 
 
                 // Kodfält vid horisontell utplacering
@@ -243,6 +306,7 @@ public class Battleship {
 
                     // Kontrollerar sökområdet
 
+
                     for (int j = checkYStart; j < checkYEnd; j++) {
                         for (int k = checkXStart; k < checkXEnd; k++) {
                             if (!Objects.equals(map[j][k], "▓")) collision++;
@@ -271,11 +335,10 @@ public class Battleship {
 
         for (int i = 0; i < mapSizeY; i++) {
             for (int j = 0; j < mapSizeX; j++) {
-                System.out.print(map[i][j] + " ");
+                //System.out.print(map[i][j] + " ");
             }
-            System.out.println();
+            //System.out.println();
         }
-        System.out.println("\nUtplacering " + "färdig efter " + (reset * 100 + placementTries) + " st försök (" + reset + " nollställningar).");
     }
 
 }
@@ -291,6 +354,3 @@ public class Battleship {
 
 
 //slumpmässigt skott
-
-
-
