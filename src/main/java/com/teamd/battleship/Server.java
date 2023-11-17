@@ -18,9 +18,7 @@ public class Server {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            String message = reader.readLine();
-            Battleship serverShip = new Battleship();
-            serverShip.readFirstLetter(message);
+            Battleship.opponentMessage = reader.readLine();
         }
         catch (IOException e){
             System.out.println(e.getMessage());
