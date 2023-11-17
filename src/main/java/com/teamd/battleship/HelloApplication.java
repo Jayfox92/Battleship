@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -12,6 +11,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.util.Map;
 
 public class HelloApplication extends Application {
 
@@ -69,22 +70,28 @@ public class HelloApplication extends Application {
         GridPane playerOne = createSpelplan();
         GridPane playerTwo = createSpelplan();
 
-        playerOne.setLayoutX(125);
-        playerOne.setLayoutY(45);
-        playerTwo.setLayoutX(420);
-        playerTwo.setLayoutY(45);
-
+        PositionGameBoards(playerOne,playerTwo);
 
         Button startaSpelKnapp = new Button("Starta spel");
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane)); // refererar till handleStartGame
-        startaSpelKnapp.setLayoutX(350); //shifted the button a bit to the center
-        startaSpelKnapp.setLayoutY(310); //moved the button along the y-axis as it was overlapping with the Grid
+        layoutStartGameButton(startaSpelKnapp);
+
         anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp);
 
         Scene scene = new Scene(anchorPane, 800, 450);
         primaryStage.setScene(scene);
 
         primaryStage.show();
+    }
+    private  void PositionGameBoards(GridPane playerOne, GridPane playerTwo){ // här också
+        playerOne.setLayoutX(125);
+        playerOne.setLayoutY(45);
+        playerTwo.setLayoutX(420);
+        playerTwo.setLayoutY(45);
+    }
+    private void layoutStartGameButton(Button startaSpelKnapp){ //gör det enklare
+        startaSpelKnapp.setLayoutX(350);
+        startaSpelKnapp.setLayoutY(310);
     }
 
     private GridPane createSpelplan() {
@@ -97,55 +104,57 @@ public class HelloApplication extends Application {
             for (int kolumn = 0; kolumn < battleship.mapSizeX; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
 
-                pane.setFill(Color.rgb(0,204,204));
+                Map<String, Color> colorMap = Map.of( // skapar färg till båtarna här med hjälp av map
+                        "2", Color.BLUE,
+                        "3", Color.GREEN,
+                        "4", Color.BLACK,
+                        "5", Color.ORANGE
+                );
+
+
+                pane.setFill(Color.rgb(0, 204, 204));
                 pane.setStroke(Color.BLACK);
 
-
-                pane.setOnMouseEntered(event -> {
-                    pane.setFill(Color.rgb(0,0,112));
-                });
-                pane.setOnMouseExited(event -> {
-                    pane.setFill(Color.rgb(0, 204, 204));
-                });
                 StackPane stackPane = new StackPane();
                 stackPane.getChildren().addAll(pane);
                 String temp[][] = battleship.getMap();
-                Label label = new Label(temp[rad][kolumn]);
-                label.setOnMouseEntered(event -> {
-                    pane.setFill(Color.rgb(0,0,112));
-                });
-                label.setOnMouseExited(event -> {
-                    pane.setFill(Color.rgb(0, 204, 204));
-                });
+
+                Label label = new Label(""); // Gör Tom label för att ta bort siffrorna
+
                 stackPane.getChildren().addAll(label);
-                stackPane.setOnMouseEntered(event -> {
-                    pane.setFill(Color.rgb(0,0,112));
-                });
-                stackPane.setOnMouseExited(event -> {
-                    pane.setFill(Color.rgb(0, 204, 204));
-                });
 
                 gridPane.add(stackPane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
+
+                String shipLength = temp[rad][kolumn]; // hämtar värdet från arrayen för att kontrollera colormap innehåller shipLength
+                if (colorMap.containsKey(shipLength)) {
+                    pane.setFill(colorMap.get(shipLength));
+
+                    //Tar bort denna
+                /*switch (temp[rad][kolumn]) {
+                    case "1":
+                        pane.setFill(Color.RED);
+
+                        break;
+                    case "2":
+                        pane.setFill(Color.BLUE);
+
+                        break;
+                    case "3":
+                        pane.setFill(Color.GREEN);
+                        break;
+                    case "4":
+                        pane.setFill(Color.ORANGE);
+                        break;
+                    case "5":
+                        pane.setFill(Color.ORANGE);{
+                        break;
+                    }*/
+                }
+
+
+
             }
         }
-        /*for (int rad = 0; rad < size; rad++) {
-            for (int kolumn = 0; kolumn < size; kolumn++) {
-                Rectangle pane = new Rectangle(22, 22);
-                pane.setFill(Color.rgb(0,204,204));
-                pane.setStroke(Color.BLACK);
-
-                // Original effects
-                pane.setOnMouseEntered(event -> {
-                    pane.setFill(Color.rgb(0,0,112));
-                });
-                pane.setOnMouseExited(event -> {
-                    pane.setFill(Color.rgb(0, 204, 204));
-                });
-
-                gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
-            }
-        }*/
-
 
         // Add letters and numbers as labels
         for (int i = 0; i < size; i++) {
@@ -161,13 +170,6 @@ public class HelloApplication extends Application {
 
     private void handleStartGame(AnchorPane anchorPane) {
         System.out.println("Spelet startar");
-        TextField textField = new TextField();
-        textField.setPromptText("Skriv in "); // skapar textfield för när spelet startar
-        textField.setLayoutX(20);
-        textField.setLayoutY(243);
-        System.out.println(textField);
-        anchorPane.getChildren().add(textField);
-        // placera spelets logik
 
     }
 
