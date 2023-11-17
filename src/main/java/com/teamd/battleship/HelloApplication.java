@@ -15,6 +15,9 @@ import javafx.stage.Stage;
 import java.util.Map;
 
 public class HelloApplication extends Application {
+    private boolean autoShot = false;
+    private int delay = 0;
+
 
     private Stage primaryStage;
     public static void main(String[] args) {
@@ -76,7 +79,17 @@ public class HelloApplication extends Application {
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane)); // refererar till handleStartGame
         layoutStartGameButton(startaSpelKnapp);
 
-        anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp);
+        Text playerjag = new Text("Jag");
+        playerjag.setLayoutX(230);
+        playerjag.setLayoutY(35);
+        playerjag.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
+
+        Text playerMotståndare = new Text("Motståndare");
+        playerMotståndare.setLayoutY(35);
+        playerMotståndare.setLayoutX(455);
+        playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
+
+        anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp, playerjag,playerMotståndare);
 
         Scene scene = new Scene(anchorPane, 800, 450);
         primaryStage.setScene(scene);
@@ -105,10 +118,10 @@ public class HelloApplication extends Application {
                 Rectangle pane = new Rectangle(22, 22);
 
                 Map<String, Color> colorMap = Map.of( // skapar färg till båtarna här med hjälp av map
-                        "2", Color.BLUE,
-                        "3", Color.GREEN,
-                        "4", Color.BLACK,
-                        "5", Color.ORANGE
+                            "2", Color.GREY,
+                        "3", Color.GREY,
+                        "4", Color.GREY,
+                        "5", Color.GREY
                 );
 
 
@@ -129,26 +142,6 @@ public class HelloApplication extends Application {
                 if (colorMap.containsKey(shipLength)) {
                     pane.setFill(colorMap.get(shipLength));
 
-                    //Tar bort denna
-                /*switch (temp[rad][kolumn]) {
-                    case "1":
-                        pane.setFill(Color.RED);
-
-                        break;
-                    case "2":
-                        pane.setFill(Color.BLUE);
-
-                        break;
-                    case "3":
-                        pane.setFill(Color.GREEN);
-                        break;
-                    case "4":
-                        pane.setFill(Color.ORANGE);
-                        break;
-                    case "5":
-                        pane.setFill(Color.ORANGE);{
-                        break;
-                    }*/
                 }
 
 
@@ -171,7 +164,23 @@ public class HelloApplication extends Application {
     private void handleStartGame(AnchorPane anchorPane) {
         System.out.println("Spelet startar");
 
+       // autoShot=true;
+       // startAutomaticShooting();
+
+    }
+
+   /* private void startAutomaticShooting() { new Thread(()-> {
+
+        new Thread(() -> {
+            while (autoShot) {
+                try {
+                 delay = (int) (Math.random() * (delay + 1) * 1000);
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();*/
     }
 
 
-}

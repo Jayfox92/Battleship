@@ -10,7 +10,6 @@ public class Battleship {
     String[][] map;
     int mapSizeX;
     int mapSizeY;
-    String water;
 
     public static void main(String[] args) {
         Battleship game = new Battleship();
@@ -20,18 +19,6 @@ public class Battleship {
         //shipPlacement();
     }
 
-    /*{
-            A{"0","1","2","3","4","5","6","7","8","9",},
-            B{"","","","","","","","","","",},
-            C{"","","","","","","","","","",},
-            D{"","","","","","","","","","",},
-            E{"","","","","","","","","","",},
-            F{"","","","","","","","","","",},
-            G{"","","","","","","","","","",},
-            H{"","","","","","","","","","",},
-            I{"","","","","","","","","","",},
-            J{"","","","","","","","","","",},
-    };*/
     private boolean gameActive = false;
     public char readFirstLetter(String message) { // detta läser första bokstaven som enl. protokoll kommer kunna identifiera vilken 'action' som görs
         message = message.trim();
