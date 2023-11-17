@@ -31,6 +31,12 @@ public class HelloApplication extends Application {
     Button shootButton;
     String shootButtonText = "Player 1 shoots";
     boolean isPlayer1 = true;
+
+    // Store 100 points per board
+    int[][] player1ShootHistory = new int[100][2];
+    int[][] player2ShootHistory = new int[100][2];
+    int[][] activePlayerShootHistory = new int[100][2];
+    int [] shootingPoint = new int[2];
     public static void main(String[] args) {
         launch();
     }
@@ -288,29 +294,39 @@ public class HelloApplication extends Application {
         if (isPlayer1){
             // Player 1 turn
             shootButtonText = "Player 1 shoots";
-            pointHit = checkShootHit(playerTwo);
+            pointHit = checkShootHit(2);
 
         }
         else {
             // Player 2 turn
             shootButtonText = "Player 2 shoots";
-            pointHit = checkShootHit(playerOne);
+            pointHit = checkShootHit(1);
         }
 
         shootButton.setText(shootButtonText);
         isPlayer1 = !isPlayer1;
     }
 
-    private boolean checkShootHit(GridPane playerBoard) {
-        boolean pointHit = false;
-        int x = getRandomPoint()[0];
-        int y = getRandomPoint()[1];
+    private boolean checkShootHit(int opponent) {
+        boolean pointHit = false, validPoint = false;
+        GridPane playerBoard;
+
+        while(!validPoint){
+            validPoint = getPointToShoot(opponent);
+        }
+
+        if (opponent == 1){
+            playerBoard = playerOne;
+        }
+        else {
+            playerBoard = playerTwo;
+        }
 
         ObservableList<Node> children = playerBoard.getChildren();
 
         // Check if the rectangles in the range have a ship already
         for (Node node : children) {
-            if(GridPane.getRowIndex(node) == x && GridPane.getColumnIndex(node) == y) {
+            if(GridPane.getRowIndex(node) == shootingPoint[0] && GridPane.getColumnIndex(node) == shootingPoint[1]) {
                 Rectangle rect = (Rectangle) node;
                 if (rect.getFill().equals(Color.DARKGREEN)) {
                     pointHit = true;
@@ -320,5 +336,39 @@ public class HelloApplication extends Application {
             }
         }
         return pointHit;
+    }
+
+    private boolean getPointToShoot(int opponent) {
+        shootingPoint = getRandomPoint();
+        boolean isValidPoint = true;
+
+        if (opponent == 1){
+            activePlayerShootHistory = player2ShootHistory;
+        }
+        else {
+            activePlayerShootHistory = player1ShootHistory;
+        }
+
+        for (int i = 1; i < 100; i++){
+            if ((activePlayerShootHistory[i][0] == 0) || (activePlayerShootHistory[i][1] == 0)){
+                // Point 0,0 is connected to the labels, and also the init value
+                break;
+            }
+            if ((activePlayerShootHistory[i][0] == shootingPoint[0]) && (activePlayerShootHistory[i][1] == shootingPoint[1])){
+                // Point is in history
+                isValidPoint = false;
+            }
+        }
+
+        // Save point in array
+        for (int i = 1; isValidPoint && i < 100; i++){
+            if ((activePlayerShootHistory[i][0] == 0) || (activePlayerShootHistory[i][1] == 0)){
+                // Point 0,0 is connected to the labels, and also the init value
+                activePlayerShootHistory[i][0] = shootingPoint[0];
+                activePlayerShootHistory[i][1] = shootingPoint[1];
+                break;
+            }
+        }
+        return  isValidPoint;
     }
 }
