@@ -4,6 +4,10 @@ import java.util.*;
 
 
 public class Battleship {
+    public Battleship(String message){
+        this.opponentMessage = message;
+    }
+    public Battleship(){}
 
     Ship ship1 = new Ship(5, "s0", "hangarfartyg");
     Ship ship2 = new Ship(4, "s1", "slagskepp");
@@ -34,7 +38,7 @@ public class Battleship {
     int mapSizeY;
     String water;
     String ownMessage;
-    static String opponentMessage;
+    String opponentMessage;
 
 
 
@@ -72,7 +76,7 @@ public class Battleship {
         //slumpa nytt skott
         }
         else if (action=='h'){//shot hit //ai
-
+        readCoordinates(message);
         }
         else if (action=='m'){//shot miss //random
 
@@ -132,8 +136,12 @@ public class Battleship {
                         if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j+1).equals(list.get(1))) {
                             shipList.get(i).setHits(1);
                             if (shipList.get(i).isSunk()) {
+                                map[list.get(0)][list.get(1)] = "u";
                                 ownMessage = "s shot";
-                            } else ownMessage = "h shot";
+                            } else {
+                                map[list.get(0)][list.get(1)] = "h";
+                                ownMessage = "h shot";
+                            }
                         }
                     } catch (Exception ignore) {}
                 }
@@ -270,10 +278,7 @@ public class Battleship {
                             for (int k = shipX; k < (shipX + 1) + (shipList.get(i).getLength()-1); k++) {
                                 // map[j][k] = String.valueOf(shipList.get(i).getLength());
                                 map[j][k] = "s";
-                                int tempY = Integer.valueOf(Arrays.toString(map[j])); //sparar koordinaterna där skeppet existerar. index 0 = y, index 1 = x. index 2 = y, index 3 = x osv osv
-                                String tempString = map[j][k];
-                                int tempX = Integer.valueOf(tempString);
-                                shipList.get(i).setCoordinatesOfShip(tempY,tempX);
+                                shipList.get(i).setCoordinatesOfShip(j,k);
                             }
                         }
                         successfulPlacement = true;
@@ -320,10 +325,8 @@ public class Battleship {
                             for (int k = shipX; k < shipX + 1; k++) {
                                // map[j][k] = String.valueOf(shipList.get(i).getLength());
                                 map[j][k] = "s";
-                                int coordinateY = Integer.valueOf(Arrays.toString(map[j])); //sparar koordinaterna där skeppet existerar i en arraylist. index 0 = y, index 1 = x. index 2 = y, index 3 = x osv osv
-                                String stringOfX = map[j][k];
-                                int coordinateX = Integer.valueOf(stringOfX);
-                                shipList.get(i).setCoordinatesOfShip(coordinateY,coordinateX);
+                                shipList.get(i).setCoordinatesOfShip(j,k);
+
                             }
                         }
                         successfulPlacement = true;
