@@ -8,6 +8,7 @@ public class Server {
 
     ServerSocket serverSocket;
     Socket socket;
+    String message;
 
     public void connect(){
         try {
@@ -18,7 +19,8 @@ public class Server {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            Battleship.opponentMessage = reader.readLine();
+            message = reader.readLine();
+            Battleship serverShip = new Battleship(message);
         }
         catch (IOException e){
             System.out.println(e.getMessage());
