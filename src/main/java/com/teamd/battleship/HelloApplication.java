@@ -115,13 +115,6 @@ public class HelloApplication extends Application {
                 pane.setFill(Color.rgb(0, 204, 204));
                 pane.setStroke(Color.BLACK);
 
-                // Original effects // Tar kanske bort detta
-                pane.setOnMouseEntered(event -> {
-                    pane.setFill(Color.rgb(0, 0, 112));
-                });
-                pane.setOnMouseExited(event -> {
-                    pane.setFill(Color.rgb(0, 204, 204));
-                });
                 StackPane stackPane = new StackPane();
                 stackPane.getChildren().addAll(pane);
                 String temp[][] = battleship.getMap();

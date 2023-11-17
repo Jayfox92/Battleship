@@ -8,11 +8,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-
     ServerSocket serverSocket;
     Socket socket;
 
-    public void connect(){
+    public void connect() {
         try {
             serverSocket = new ServerSocket(8080);
             socket = serverSocket.accept();
@@ -21,8 +20,7 @@ public class Server {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String message = reader.readLine();
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
