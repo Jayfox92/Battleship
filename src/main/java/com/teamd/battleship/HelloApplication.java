@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.collections.ObservableList;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -27,6 +28,9 @@ public class HelloApplication extends Application {
     ArrayList<Skepp> playerOneFleet;
     ArrayList<Skepp> playerTwoFleet;
     Button startaSpelKnapp;
+    Button shootButton;
+    String shootButtonText = "Player 1 shoots";
+    boolean isPlayer1 = true;
     public static void main(String[] args) {
         launch();
     }
@@ -93,7 +97,14 @@ public class HelloApplication extends Application {
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane)); // refererar till handleStartGame
         startaSpelKnapp.setLayoutX(350); //shifted the button a bit to the center
         startaSpelKnapp.setLayoutY(310); //moved the button along the y-axis as it was overlapping with the Grid
-        anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp);
+
+        shootButton = new Button(shootButtonText);
+        shootButton.setOnAction(event -> handleShooting(anchorPane)); // refererar till handleStartGame
+        shootButton.setLayoutX(350); //shifted the button a bit to the center
+        shootButton.setLayoutY(350); //moved the button along the y-axis as it was overlapping with the Grid
+        shootButton.setDisable(true);
+
+        anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp, shootButton);
 
         Scene scene = new Scene(anchorPane, 800, 450);
         primaryStage.setScene(scene);
@@ -101,6 +112,7 @@ public class HelloApplication extends Application {
         primaryStage.show();
 
     }
+
 
     private GridPane createSpelplan() {
         GridPane gridPane = new GridPane();
@@ -156,12 +168,16 @@ public class HelloApplication extends Application {
         placeShips(playerTwo, playerTwoFleet);
         // Disable the button after setting the boards.
         startaSpelKnapp.setDisable(true);
+        shootButton.setDisable(false);
 
     }
 
+    private int [] getRandomPoint(){
+        Random rand = new Random();
+        return new int[]{rand.nextInt(10), rand.nextInt(10)};
+    }
     private void placeShips(GridPane playerBoard, ArrayList<Skepp> fleet){
         // Get random point on board
-        Random rand = new Random();
         int x, y, shipLength;
         int start = 0, fixed = 0;
         boolean horizontal = false;
@@ -169,8 +185,8 @@ public class HelloApplication extends Application {
         for(int i = 0; i < 10; i++) {
             boolean pointOK = false;
             while (!pointOK) {
-                x = rand.nextInt(10);
-                y = rand.nextInt(10);
+                x = getRandomPoint()[0];
+                y = getRandomPoint()[1];
                 shipLength = fleet.get(i).getLängd();
 
                 // check if ship fits left, up, right, down
@@ -265,5 +281,44 @@ public class HelloApplication extends Application {
                 }
             }
         }
+    }
+
+    private void handleShooting(AnchorPane anchorPane) {
+        boolean pointHit;
+        if (isPlayer1){
+            // Player 1 turn
+            shootButtonText = "Player 1 shoots";
+            pointHit = checkShootHit(playerTwo);
+
+        }
+        else {
+            // Player 2 turn
+            shootButtonText = "Player 2 shoots";
+            pointHit = checkShootHit(playerOne);
+        }
+
+        shootButton.setText(shootButtonText);
+        isPlayer1 = !isPlayer1;
+    }
+
+    private boolean checkShootHit(GridPane playerBoard) {
+        boolean pointHit = false;
+        int x = getRandomPoint()[0];
+        int y = getRandomPoint()[1];
+
+        ObservableList<Node> children = playerBoard.getChildren();
+
+        // Check if the rectangles in the range have a ship already
+        for (Node node : children) {
+            if(GridPane.getRowIndex(node) == x && GridPane.getColumnIndex(node) == y) {
+                Rectangle rect = (Rectangle) node;
+                if (rect.getFill().equals(Color.DARKGREEN)) {
+                    pointHit = true;
+                    rect.setFill(Color.RED);
+                    break;
+                }
+            }
+        }
+        return pointHit;
     }
 }
