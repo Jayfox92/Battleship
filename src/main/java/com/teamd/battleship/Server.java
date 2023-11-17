@@ -9,6 +9,10 @@ public class Server {
     ServerSocket serverSocket;
     Socket socket;
     String message;
+    public Server(String message){
+        this.message = message;
+    }
+    public Server(){}
 
     public void connect(){
         try {
@@ -19,8 +23,19 @@ public class Server {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            message = reader.readLine();
             Battleship serverShip = new Battleship(message);
+            serverShip.shipPlacement();
+            int roundCounter = 0;
+
+            while (Battleship.activeGame) {
+                message = reader.readLine();
+                System.out.println(message);
+                serverShip.decideNextAction(message);
+                writer.println(message);
+                System.out.println(message);
+                System.out.println(roundCounter);
+                roundCounter++;
+            }
         }
         catch (IOException e){
             System.out.println(e.getMessage());

@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class HelloApplication extends Application {
-
     private Stage primaryStage;
     public static void main(String[] args) {
         launch();
@@ -93,6 +92,8 @@ public class HelloApplication extends Application {
         GridPane gridPane = new GridPane();
         Battleship battleship = new Battleship();
         battleship.shipPlacement();
+
+        // problemet är att kartan & skepp existerar endast i objektet battleship
         int size = 10;
         char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
         for (int rad = 0; rad < battleship.mapSizeY; rad++) {
