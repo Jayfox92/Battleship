@@ -12,6 +12,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Map;
+
 public class HelloApplication extends Application {
 
     private Stage primaryStage;
@@ -102,10 +104,18 @@ public class HelloApplication extends Application {
             for (int kolumn = 0; kolumn < battleship.mapSizeX; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
 
+                Map<String, Color> colorMap = Map.of( // skapar färg till båtarna här med hjälp av map
+                        "2", Color.BLUE,
+                        "3", Color.GREEN,
+                        "4", Color.BLACK,
+                        "5", Color.ORANGE
+                );
+
+
                 pane.setFill(Color.rgb(0, 204, 204));
                 pane.setStroke(Color.BLACK);
 
-                // Original effects
+                // Original effects // Tar kanske bort detta
                 pane.setOnMouseEntered(event -> {
                     pane.setFill(Color.rgb(0, 0, 112));
                 });
@@ -115,13 +125,19 @@ public class HelloApplication extends Application {
                 StackPane stackPane = new StackPane();
                 stackPane.getChildren().addAll(pane);
                 String temp[][] = battleship.getMap();
-                Label label = new Label(temp[rad][kolumn]);
+
+                Label label = new Label(""); // Gör Tom label för att ta bort siffrorna
+
                 stackPane.getChildren().addAll(label);
 
                 gridPane.add(stackPane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
 
+                String shipLength = temp[rad][kolumn]; // hämtar värdet från arrayen för att kontrollera colormap innehåller shipLength
+                if (colorMap.containsKey(shipLength)) {
+                    pane.setFill(colorMap.get(shipLength));
 
-                switch (temp[rad][kolumn]) {
+                    //Tar bort denna
+                /*switch (temp[rad][kolumn]) {
                     case "1":
                         pane.setFill(Color.RED);
 
@@ -138,8 +154,8 @@ public class HelloApplication extends Application {
                         break;
                     case "5":
                         pane.setFill(Color.ORANGE);{
-                            break;
-                    }
+                        break;
+                    }*/
                 }
 
 
@@ -159,7 +175,7 @@ public class HelloApplication extends Application {
     }
 
 
-      private void handleStartGame(AnchorPane anchorPane) {
+    private void handleStartGame(AnchorPane anchorPane) {
         System.out.println("Spelet startar");
 
     }

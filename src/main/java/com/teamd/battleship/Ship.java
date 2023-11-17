@@ -1,6 +1,8 @@
 package com.teamd.battleship;
 
 
+import javafx.scene.paint.Color;
+
 public class Ship {
 
     private int length;
@@ -10,15 +12,27 @@ public class Ship {
     private String name;
     private String description;
 
-
-
     public Ship(int length, String name, String description) {
         this.length = length;
         this.name = name;
+
+
     }
 
     public int getLength() {
         return length;
+    }
+
+    public boolean GameOver(){
+
+        if(ärSänkt()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean ärSänkt() {
+        return hits >= length;
     }
 
     public void setLength(int length) {
