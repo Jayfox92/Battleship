@@ -4,32 +4,13 @@ import java.util.*;
 
 
 public class Battleship {
-    public Battleship(String message){
-        this.opponentMessage = message;
-    }
-    public Battleship(){}
 
-    Ship ship1 = new Ship(5, "s0", "hangarfartyg");
-    Ship ship2 = new Ship(4, "s1", "slagskepp");
-    Ship ship3 = new Ship(4, "s2", "slagskepp");
-    Ship ship4 = new Ship(3, "s3", "kryssare");
-    Ship ship5 = new Ship(3, "s4", "kryssare");
-    Ship ship6 = new Ship(3, "s5", "kryssare");
-    Ship ship7 = new Ship(2, "s6", "ubåt");
-    Ship ship8 = new Ship(2, "s7", "ubåt");
-    Ship ship9 = new Ship(2, "s8", "ubåt");
-    Ship ship10 = new Ship(2, "s9", "ubåt");
-
-
-    List<Ship> shipList = new ArrayList<>();
-    static String[][] map;
+    String[][] map;
     int mapSizeX;
     int mapSizeY;
     String water;
-    String ownMessage = "";
-    String opponentMessage;
-    static boolean activeGame = true;
-    boolean serverTurn = true;
+
+
 
 
 
@@ -55,75 +36,30 @@ public class Battleship {
             I{"","","","","","","","","","",},
             J{"","","","","","","","","","",},
     };*/
-
-
-
-    public void decideNextAction(String message){
+    private boolean gameActive = false;
+    public char readFirstLetter(String message) { // detta läser första bokstaven som enl. protokoll kommer kunna identifiera vilken 'action' som görs
         message = message.trim();
         message = message.toLowerCase();
-        char action = message.charAt(0);
-        if (action=='i'){ //init //random
-            readCoordinates(message);
-            try {
-                ownMessage = ownMessage.concat(randomShot());
-            } catch (NullPointerException e){
-                System.out.println(e.getMessage());
-            } finally {
-                System.exit(0);
-            }
-            if (serverTurn){
-                ownMessage = ownMessage.concat(randomShot());
-                Server server = new Server(ownMessage);
-                serverTurn = false;
-            } else {
-                ownMessage = ownMessage.concat(randomShot());
-                Client client = new Client(ownMessage);
-                serverTurn = true;
+        return message.charAt(0);
+    }
 
-            }
+
+    public void decideNextAction(char action){
+        Random random = new Random();
+        if (action=='i'){ //init
+
 
         }
-        else if (action=='h'){//shot hit //ai
-            readCoordinates(message);
-            ownMessage = ownMessage.concat(randomShot());
-            if (serverTurn){
-                Server server = new Server(ownMessage);
-                serverTurn = false;
-            } else {
-                Client client = new Client(ownMessage);
-                serverTurn = true;
-
-            }
-        }
-        else if (action=='m'){//shot miss //random
-            readCoordinates(message);
-            ownMessage = ownMessage.concat(randomShot());
-            if (serverTurn){
-                Server server = new Server(ownMessage);
-                serverTurn = false;
-            } else {
-                Client client = new Client(ownMessage);
-                serverTurn = true;
-
-            }
+        else if (action=='h'){//shot hit
 
         }
-        else if (action=='s'){//shot sänkt //random
-            readCoordinates(message);
-            ownMessage = ownMessage.concat(randomShot());
-            if (serverTurn){
-                Server server = new Server(ownMessage);
-                serverTurn = false;
-            } else {
-                Client client = new Client(ownMessage);
-                serverTurn = true;
+        else if (action=='m'){//shot miss
 
-            }
+        }
+        else if (action=='s'){//shot sänkt
 
         }
         else if (action=='g'){//game over
-            System.out.println("Game over");
-            activeGame = false;
 
         }
         else System.out.println("Issue reading protocol");
@@ -131,7 +67,7 @@ public class Battleship {
 
 
 
-    public void readCoordinates(String string){ // Y-koordinat lagras i index 0, X-koordinat lagras i index 1, returneras som en arraylist
+    public List<Integer> readCoordinates(String string){ // Y-koordinat lagras i index 0, X-koordinat lagras i index 1, returneras som en arraylist
         List<Integer> listOfShotCoordinates = new ArrayList<>();
         string = string.trim();
         string = string.toLowerCase();
@@ -146,53 +82,15 @@ public class Battleship {
         charsMappedToInt.put('h',7);
         charsMappedToInt.put('i',8);
         charsMappedToInt.put('j',9);
-        int indexOfY = string.length()-1;
-        char findPosOfY = string.charAt(indexOfY);
+        char findPosOfY = string.charAt((string.length()-1));
         int yCoordinate = charsMappedToInt.get(findPosOfY);
         listOfShotCoordinates.add(yCoordinate);
-        int indexOfX = string.length()-2;
-        char findPosOfX = string.charAt(indexOfX);
+        char findPosOfX = string.charAt((string.length()-2));
         int xCooordinate = Character.getNumericValue(findPosOfX);
         listOfShotCoordinates.add(xCooordinate);
-        System.out.println(listOfShotCoordinates.get(0));
-        System.out.println(listOfShotCoordinates.get(1));
-        checkCoordinates(listOfShotCoordinates);
 
-    }
+        return listOfShotCoordinates;
 
-
-
-    public void checkCoordinates(List<Integer> list) {
-        try {
-            if (map[list.get(0)][list.get(1)].equals(water)) {
-                ownMessage = "m shot";
-            } else if (map[list.get(0)][list.get(1)].equals("s")) {
-                for (int i = 0; i < shipList.size(); i++) {
-                    List<Integer> shipCoordinates = shipList.get(i).getCoordinatesOfShip();
-                    for (int j = 0; j < shipCoordinates.size(); j += 2) {
-                        // Adding bounds check to prevent out-of-bounds exception
-                        // This ensures we don't access an index beyond the list's size,
-                        // particularly when accessing shipCoordinates.get(j + 1) for y-coordinate.
-                        // This is essential for safely handling pairs of x and y coordinates.
-                        if (j + 1 < shipCoordinates.size()) {
-                            if (shipCoordinates.get(j).equals(list.get(0)) && shipCoordinates.get(j + 1).equals(list.get(1))) {
-                                shipList.get(i).setHits(1);
-                                if (shipList.get(i).isSunk()) {
-                                    ownMessage = "s shot";
-                                } else {
-                                    ownMessage = "h shot";
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                System.out.println("Error comparing coordinates to map");
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
     }
 
 
@@ -203,7 +101,7 @@ public class Battleship {
 
         // Skapa objekt
 
-        /*Ship ship1 = new Ship(5, "s0", "hangarfartyg");
+        Ship ship1 = new Ship(5, "s0", "hangarfartyg");
         Ship ship2 = new Ship(4, "s1", "slagskepp");
         Ship ship3 = new Ship(4, "s2", "slagskepp");
         Ship ship4 = new Ship(3, "s3", "kryssare");
@@ -212,7 +110,7 @@ public class Battleship {
         Ship ship7 = new Ship(2, "s6", "ubåt");
         Ship ship8 = new Ship(2, "s7", "ubåt");
         Ship ship9 = new Ship(2, "s8", "ubåt");
-        Ship ship10 = new Ship(2, "s9", "ubåt");*/
+        Ship ship10 = new Ship(2, "s9", "ubåt");
 
 
         // Skapa lista + addera objekt
@@ -232,8 +130,8 @@ public class Battleship {
 
         // Varibler
 
-        int reset = 0;
-        int placementTries = 0;
+        int totalTries = 0;
+        int tries = 0;
         mapSizeX = 10;
         mapSizeY = 10;
         String water = "▓";
@@ -242,6 +140,8 @@ public class Battleship {
         // Skapa karta (2D-array)
 
         map = new String[mapSizeY][mapSizeX];
+
+
 
 
         // Skriva ut tecken för vatten på kartan
@@ -270,18 +170,6 @@ public class Battleship {
             while (!successfulPlacement) {
                 int collision = 0;
                 boolean horizontalAlignment = random.nextBoolean();
-                placementTries ++;
-                if (placementTries > 1000) {
-                    i = -1;
-                    reset ++;
-                    placementTries = 0;
-                    for (int j = 0; j < mapSizeY; j++) {
-                        for (int k = 0; k < mapSizeX; k++) {
-                            map[j][k] = water;
-                        }
-                    }
-                    break;
-                }
 
 
                 // Kodfält vid horisontell utplacering
@@ -321,9 +209,7 @@ public class Battleship {
                     if (collision == 0) {
                         for (int j = shipY; j < shipY+1; j++) {
                             for (int k = shipX; k < (shipX + 1) + (shipList.get(i).getLength()-1); k++) {
-                                // map[j][k] = String.valueOf(shipList.get(i).getLength());
-                                map[j][k] = "s";
-                                shipList.get(i).setCoordinatesOfShip(j,k);
+                                map[j][k] = String.valueOf(shipList.get(i).getLength());
                             }
                         }
                         successfulPlacement = true;
@@ -368,10 +254,7 @@ public class Battleship {
                     if (collision == 0) {
                         for (int j = shipY; j < shipY + 1 + (shipList.get(i).getLength() - 1); j++) {
                             for (int k = shipX; k < shipX + 1; k++) {
-                               // map[j][k] = String.valueOf(shipList.get(i).getLength());
-                                map[j][k] = "s";
-                                shipList.get(i).setCoordinatesOfShip(j,k);
-
+                                map[j][k] = String.valueOf(shipList.get(i).getLength());
                             }
                         }
                         successfulPlacement = true;
@@ -387,30 +270,10 @@ public class Battleship {
 
         for (int i = 0; i < mapSizeY; i++) {
             for (int j = 0; j < mapSizeX; j++) {
-                // System.out.print(map[i][j] + " ");
+                //System.out.print(map[i][j] + " ");
             }
-            // System.out.println();
+            //System.out.println();
         }
-        // System.out.println("\nUtplacering " + "färdig efter " + (reset * 1000 + placementTries) + " st försök (" + reset + " nollställningar).");
-    }
-
-    public String randomShot(){
-        Random random = new Random();
-        Map<Integer, String> intsMappedToChar = new HashMap<>();
-        intsMappedToChar.put(0,"a");
-        intsMappedToChar.put(1,"b");
-        intsMappedToChar.put(2,"c");
-        intsMappedToChar.put(3,"d");
-        intsMappedToChar.put(4,"e");
-        intsMappedToChar.put(5,"f");
-        intsMappedToChar.put(6,"g");
-        intsMappedToChar.put(7,"h");
-        intsMappedToChar.put(8,"i");
-        intsMappedToChar.put(9,"j");
-        int randomY = random.nextInt(10);
-        String coordinateY = intsMappedToChar.get(randomY);
-        String xAsString = String.valueOf(random.nextInt(10));
-        return xAsString.concat(coordinateY);
     }
 
 }
