@@ -32,9 +32,6 @@ public class Battleship {
     boolean serverTurn = true;
 
 
-
-
-
     public static void main(String[] args) {
         Battleship game = new Battleship();
         // Här kan du använda flottan och implementera resten av spelet
@@ -284,8 +281,8 @@ public class Battleship {
                     if (collision == 0) {
                         for (int j = shipY; j < shipY+1; j++) {
                             for (int k = shipX; k < (shipX + 1) + (shipList.get(i).getLength()-1); k++) {
-                                // map[j][k] = String.valueOf(shipList.get(i).getLength());
-                                map[j][k] = "s";
+                                map[j][k] = String.valueOf(shipList.get(i).getLength());
+                                //map[j][k] = "s";
                                 shipList.get(i).setCoordinatesOfShip(j,k);
                             }
                         }
@@ -331,8 +328,8 @@ public class Battleship {
                     if (collision == 0) {
                         for (int j = shipY; j < shipY + 1 + (shipList.get(i).getLength() - 1); j++) {
                             for (int k = shipX; k < shipX + 1; k++) {
-                                // map[j][k] = String.valueOf(shipList.get(i).getLength());
-                                map[j][k] = "s";
+                                map[j][k] = String.valueOf(shipList.get(i).getLength());
+                                //map[j][k] = "s";
                                 shipList.get(i).setCoordinatesOfShip(j,k);
 
                             }
