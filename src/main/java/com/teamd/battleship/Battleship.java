@@ -164,41 +164,37 @@ public class Battleship {
 
     public void checkCoordinates(List<Integer> list) {
         try {
-            if (map[list.get(0)][list.get(1)].equals(water)) { //innehåller koordinaterna vatten = miss
-                // Objects.equals(water, map[list.get(0)][list.get(1)])
+            if (map[list.get(0)][list.get(1)].equals(water)) {
                 ownMessage = "m shot";
-
-
-            } else if (map[list.get(0)][list.get(1)].equals("s")) { //innehåller koordinaterna s (temp sträng för skepp i skrivande stund) = träff
-                // Objects.equals("s", map[list.get(0)][list.get(1)])
-                //när skepp placeras i 2d array map sparas även koodrinaterna i en arraylist i Ship.java, så att vi får en koppling mellan några koordinater & ett specifikt skepp
-                for (int i = 0; i < shipList.size(); i++) { //loopar igenom alla skepp
-
-                    for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j++) { // loopar igenom alla koordinater där skeppet 'existerar'
-                        try { //try catch med tomt catch-block för att hantera out-of-bounds: (j+1)
-                            if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
+            } else if (map[list.get(0)][list.get(1)].equals("s")) {
+                for (int i = 0; i < shipList.size(); i++) {
+                    List<Integer> shipCoordinates = shipList.get(i).getCoordinatesOfShip();
+                    for (int j = 0; j < shipCoordinates.size(); j += 2) {
+                        // Adding bounds check to prevent out-of-bounds exception
+                        // This ensures we don't access an index beyond the list's size,
+                        // particularly when accessing shipCoordinates.get(j + 1) for y-coordinate.
+                        // This is essential for safely handling pairs of x and y coordinates.
+                        if (j + 1 < shipCoordinates.size()) {
+                            if (shipCoordinates.get(j).equals(list.get(0)) && shipCoordinates.get(j + 1).equals(list.get(1))) {
                                 shipList.get(i).setHits(1);
                                 if (shipList.get(i).isSunk()) {
-                                    //map[list.get(0)][list.get(1)] = "u";
                                     ownMessage = "s shot";
                                 } else {
-                                    //map[list.get(0)][list.get(1)] = "x";
                                     ownMessage = "h shot";
                                 }
                             }
-                        } catch (Exception ignore) {
-                            System.out.println(ignore.getMessage());
                         }
                     }
-
                 }
-            } else System.out.println("Error comparing coordinates to map");
-
+            } else {
+                System.out.println("Error comparing coordinates to map");
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     public String[][] getMap(){
         return map;
