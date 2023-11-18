@@ -8,9 +8,13 @@ public class Server {
 
     ServerSocket serverSocket;
     Socket socket;
-    String message;
-    public Server(String message){
-        this.message = message;
+    String ownMessage;
+    String opponentMessage;
+    Battleship battleShip;
+    int roundCounter = 0;
+    public Server(String message, Battleship battleship){
+        this.ownMessage = message;
+        this.battleShip = battleship;
     }
     public Server(){}
 
@@ -23,19 +27,28 @@ public class Server {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            Battleship serverShip = new Battleship(message);
-            serverShip.shipPlacement();
-            int roundCounter = 0;
-
-            while (Battleship.activeGame) {
-                message = reader.readLine();
-                System.out.println(message);
-                serverShip.decideNextAction(message);
-                writer.println(message);
-                System.out.println(message);
-                System.out.println(roundCounter);
-                roundCounter++;
+            battleShip.shipPlacement();
+            for (int i=0; i < 10; i++) {
+                for (int j=0; j < 10; j++){
+                    System.out.print(battleShip.getMap()[i][j]);
+                }
+                System.out.println();
             }
+
+
+            do{
+                opponentMessage = reader.readLine();
+                System.out.println(opponentMessage);
+                battleShip.serverTurn = true;
+                battleShip.decideNextAction(opponentMessage);
+                System.out.println(ownMessage);
+                writer.println(ownMessage);
+                System.out.println("Round "+roundCounter);
+                roundCounter++;
+            } while (Battleship.activeGame);
+
+
+
         }
         catch (IOException e){
             System.out.println(e.getMessage());
