@@ -5,70 +5,41 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    private ServerSocket serverSocket;
-    private Socket socket;
-    private BufferedReader reader;
-    private PrintWriter writer;
-    private Battleship battleship;
 
-    public void connect() {
+    ServerSocket serverSocket;
+    Socket socket;
+    String message;
+    public Server(String message){
+        this.message = message;
+    }
+    public Server(){}
+
+    public void connect(){
         try {
             serverSocket = new ServerSocket(8080);
             socket = serverSocket.accept();
-            System.out.println("Klient ansluten: " + socket.getInetAddress());
-
-
+            System.out.println("Successful connection");
             InputStream inputStream = socket.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            reader = new BufferedReader(inputStreamReader);
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+            Battleship serverShip = new Battleship(message);
+            serverShip.shipPlacement();
+            int roundCounter = 0;
 
-            OutputStream outputStream = socket.getOutputStream();
-            writer = new PrintWriter(outputStream, true);
-
-            battleship = new Battleship(); // Skapa ett Battleship-objekt för att koppla
-            battleship.shipPlacement();
-
-            try {
-                handleMessages();
-            } catch (IOException e) {
-                System.out.println("Fel: " + e.getMessage());
+            while (Battleship.activeGame) {
+                message = reader.readLine();
+                System.out.println(message);
+                serverShip.decideNextAction(message);
+                writer.println(message);
+                System.out.println(message);
+                System.out.println(roundCounter);
+                roundCounter++;
             }
-        } catch (IOException e) {
-            System.out.println("Anslutningsfel: " + e.getMessage());
         }
-    }
-
-    private void handleMessages() throws IOException {
-        String message;
-        while ((message = reader.readLine()) != null) {
-            System.out.println("Meddelande från klient: " + message);
-
-            if (message.equals("START_GAME")) {
-
-                String[][] map = battleship.getMap();
-                sendMap(map);
-
-            } else if (message.startsWith("SHOT")) {
-                String[] parts = message.split(" ");
-                if (parts.length == 2) {
-                    String coordinate = parts[1];
-
-                    String[][] updatedMap = battleship.getMap();
-                    sendMap(updatedMap);
-                }
-            }
-
+        catch (IOException e){
+            System.out.println(e.getMessage());
         }
-    }
-
-    private void sendMap(String[][] map) {
-        // Skicka spelplanen till klienten
-        for (int i = 0; i < map.length; i++) {
-            String row = String.join(",", map[i]);
-            writer.println(row);
-        }
-
-        writer.println("END_MAP");
     }
 
 }
