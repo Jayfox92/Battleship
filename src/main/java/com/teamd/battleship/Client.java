@@ -25,6 +25,12 @@ public class Client {
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
             battleShip.shipPlacement();
+            for (int i=0; i < 10; i++) {
+                for (int j=0; j < 10; j++){
+                    System.out.print(battleShip.getMap()[i][j]);
+                }
+                System.out.println();
+            }
 
             do{
                 if (firstRound){
