@@ -1,5 +1,7 @@
 package com.teamd.battleship;
 
+import javafx.application.Application;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -25,6 +27,7 @@ public class Client {
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
             battleShip.shipPlacement();
+
             for (int i=0; i < 10; i++) {
                 for (int j=0; j < 10; j++){
                     System.out.print(battleShip.getMap()[i][j]);
@@ -50,7 +53,7 @@ public class Client {
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;
-            }while (Battleship.activeGame);
+            }while (battleShip.isActiveGame());
 
 
 

@@ -45,7 +45,7 @@ public class Server {
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;
-            } while (Battleship.activeGame);
+            } while (battleShip.isActiveGame());
 
 
 
