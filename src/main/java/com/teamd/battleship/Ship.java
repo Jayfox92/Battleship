@@ -88,9 +88,4 @@ public class Ship {
         return coordinatesOfShip;
 
     }
-
-
-
-
-
 }

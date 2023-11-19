@@ -4,10 +4,20 @@ import java.util.*;
 
 
 public class Battleship {
-    public Battleship(String message){
+    public Battleship(String message) {
         this.opponentMessage = message;
     }
-    public Battleship(){}
+
+    public Battleship (Server server){
+        this.server = server;
+    }
+    public Battleship (Client client){
+        this.client = client;
+    }
+
+    public Battleship() {
+    }
+
 
     Ship ship1 = new Ship(5, "s0", "hangarfartyg");
     Ship ship2 = new Ship(4, "s1", "slagskepp");
@@ -22,7 +32,11 @@ public class Battleship {
 
 
     List<Ship> shipList = new ArrayList<>();
-    static String[][] map;
+    Set<String> coordinatesThatHaveBeenShot = new HashSet<>();
+    Client client;
+    Server server;
+
+    String[][] map;
     int mapSizeX;
     int mapSizeY;
     String water;
@@ -40,154 +54,204 @@ public class Battleship {
         //shipPlacement();
     }
 
-    public void decideNextAction(String message){
+    /*{
+            A{"0","1","2","3","4","5","6","7","8","9",},
+            B{"","","","","","","","","","",},
+            C{"","","","","","","","","","",},
+            D{"","","","","","","","","","",},
+            E{"","","","","","","","","","",},
+            F{"","","","","","","","","","",},
+            G{"","","","","","","","","","",},
+            H{"","","","","","","","","","",},
+            I{"","","","","","","","","","",},
+            J{"","","","","","","","","","",},
+    };*/
+
+    public void setClient(Client client){
+        this.client = client;
+    }
+    public void setServer(Server server){
+        this.server = server;
+    }
+    public void decideNextAction(String message) {
+
+        if (!activeGame) {
+            System.out.println("Game over. No further actions can be taken.");
+            return;
+        }
+
+        ownMessage = "";
         message = message.trim();
         message = message.toLowerCase();
         char action = message.charAt(0);
-        if (action=='i'){ //init //random
+        if (action == 'i') { //init //random
             readCoordinates(message);
-            try {
-                ownMessage = ownMessage.concat(randomShot());
-            } catch (NullPointerException e){
-                System.out.println(e.getMessage());
-            } finally {
-                System.exit(0);
-            }
-            if (serverTurn){
-                ownMessage = ownMessage.concat(randomShot());
-                Server server = new Server(ownMessage);
+
+            ownMessage = ownMessage.concat(randomShot());
+
+
+
+            if (serverTurn) {
+                server.ownMessage = ownMessage;
                 serverTurn = false;
             } else {
-                ownMessage = ownMessage.concat(randomShot());
-                Client client = new Client(ownMessage);
+                client.ownMessage = ownMessage;
                 serverTurn = true;
 
             }
 
-        }
-        else if (action=='h'){//shot hit //ai
+        } else if (action == 'h') {//shot hit //ai
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
-            if (serverTurn){
-                Server server = new Server(ownMessage);
+            if (serverTurn) {
+                server.ownMessage = ownMessage;
                 serverTurn = false;
             } else {
-                Client client = new Client(ownMessage);
+                client.ownMessage = ownMessage;
                 serverTurn = true;
 
             }
-        }
-        else if (action=='m'){//shot miss //random
+        } else if (action == 'm') {//shot miss //random
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
-            if (serverTurn){
-                Server server = new Server(ownMessage);
+            if (serverTurn) {
+                server.ownMessage = ownMessage;
                 serverTurn = false;
             } else {
-                Client client = new Client(ownMessage);
+                client.ownMessage = ownMessage;
                 serverTurn = true;
 
             }
 
-        }
-        else if (action=='s'){//shot sänkt //random
+        } else if (action == 's') {//shot sänkt //random
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
-            if (serverTurn){
-                Server server = new Server(ownMessage);
+            if (serverTurn) {
+                server.ownMessage = ownMessage;
                 serverTurn = false;
+
             } else {
-                Client client = new Client(ownMessage);
+                client.ownMessage = ownMessage;
                 serverTurn = true;
 
             }
 
-        }
-        else if (action=='g'){//game over
-            System.out.println("Game over");
-            activeGame = false;
+        } else if (action == 'g') {//game over
+            if (serverTurn) {
+                System.out.println("You win, congratulations!");
+                serverTurn = false;
+                activeGame = false;
 
-        }
-        else System.out.println("Issue reading protocol");
+            } else {
+                System.out.println("You win, congratulations!");
+                serverTurn = true;
+                activeGame = false;
+
+            }
+
+
+        } else System.out.println("Issue reading protocol");
     }
 
 
-
-    public void readCoordinates(String string){ // Y-koordinat lagras i index 0, X-koordinat lagras i index 1, returneras som en arraylist
+    public void readCoordinates(String string) { // Y-koordinat lagras i index 0, X-koordinat lagras i index 1, returneras som en arraylist
         List<Integer> listOfShotCoordinates = new ArrayList<>();
         string = string.trim();
         string = string.toLowerCase();
         Map<Character, Integer> charsMappedToInt = new HashMap<>();
-        charsMappedToInt.put('a',0);
-        charsMappedToInt.put('b',1);
-        charsMappedToInt.put('c',2);
-        charsMappedToInt.put('d',3);
-        charsMappedToInt.put('e',4);
-        charsMappedToInt.put('f',5);
-        charsMappedToInt.put('g',6);
-        charsMappedToInt.put('h',7);
-        charsMappedToInt.put('i',8);
-        charsMappedToInt.put('j',9);
-        int indexOfY = string.length()-1;
+        charsMappedToInt.put('a', 0);
+        charsMappedToInt.put('b', 1);
+        charsMappedToInt.put('c', 2);
+        charsMappedToInt.put('d', 3);
+        charsMappedToInt.put('e', 4);
+        charsMappedToInt.put('f', 5);
+        charsMappedToInt.put('g', 6);
+        charsMappedToInt.put('h', 7);
+        charsMappedToInt.put('i', 8);
+        charsMappedToInt.put('j', 9);
+        int indexOfY = string.length() - 1;
         char findPosOfY = string.charAt(indexOfY);
         int yCoordinate = charsMappedToInt.get(findPosOfY);
         listOfShotCoordinates.add(yCoordinate);
-        int indexOfX = string.length()-2;
+        int indexOfX = string.length() - 2;
         char findPosOfX = string.charAt(indexOfX);
         int xCooordinate = Character.getNumericValue(findPosOfX);
         listOfShotCoordinates.add(xCooordinate);
-        System.out.println(listOfShotCoordinates.get(0));
-        System.out.println(listOfShotCoordinates.get(1));
         checkCoordinates(listOfShotCoordinates);
 
     }
 
 
-
     public void checkCoordinates(List<Integer> list) {
-        try {
-            if (map[list.get(0)][list.get(1)].equals(water)) { //innehåller koordinaterna vatten = miss
 
-                ownMessage = "m shot";
+        if (!activeGame) {
+            System.out.println("Game over. No further actions can be taken.");
+            return;
+        }
 
+        if (map[list.get(0)][list.get(1)].equals("▓")) {
+            ownMessage = "m shot ";
+            System.out.println("Found water on map");
+        } else if (map[list.get(0)][list.get(1)].equals("s")) {
+            System.out.println("Found ship on map");
 
-            } else if (map[list.get(0)][list.get(1)].equals("s")) { //innehåller koordinaterna s (temp sträng för skepp i skrivande stund) = träff
-
-                //när skepp placeras i 2d array map sparas även koodrinaterna i en arraylist i Ship.java, så att vi får en koppling mellan några koordinater & ett specifikt skepp
-                for (int i = 0; i < shipList.size(); i++) { //loopar igenom alla skepp
-
-                    for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j++) { // loopar igenom alla koordinater där skeppet 'existerar'
-                        try { //try catch med tomt catch-block för att hantera out-of-bounds: (j+1)
-                            if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
-                                shipList.get(i).setHits(1);
-                                if (shipList.get(i).isSunk()) {
-                                    //map[list.get(0)][list.get(1)] = "u";
-                                    ownMessage = "s shot";
-                                } else {
-                                    ownMessage = "h shot";
-                                }
+            for (int i = 0; i < shipList.size(); i++) {
+                //List<Integer> shipCoordinates = shipList.get(i).getCoordinatesOfShip();
+                for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size()-1; j += 2) {
+                    if (j + 1 < shipList.get(i).getCoordinatesOfShip().size()) {
+                        if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
+                            shipList.get(i).setHits(1);
+                            try{shipList.get(i).getCoordinatesOfShip().remove(j+0);
+                                shipList.get(i).getCoordinatesOfShip().remove(j+0);
+                            }catch (IndexOutOfBoundsException e){
+                                System.out.println(e.getMessage());
                             }
-                        } catch (Exception ignore) {
-                            System.out.println(ignore.getMessage());
+                            if (shipList.get(i).isSunk()){
+                                ownMessage = "s shot ";
+                                System.out.println("Ship "+shipList.get(i).getName()+" is sunk");
+                                int amountOfSunkShips = 0;
+                                for (int k = 0; k < shipList.size(); k++) {
+                                    if (shipList.get(k).isSunk()) {
+                                        amountOfSunkShips++;
+
+                                    }
+                                }
+                                System.out.println("Amount of sunken ships is currently "+amountOfSunkShips+" out of 10");
+                                if (amountOfSunkShips >= shipList.size()) {
+                                    ownMessage = "game over";
+                                    System.out.println("All your ships are sunk, you lose. Sorry!");
+                                }
+
+                            }
+                        } else {
+                            ownMessage = "h shot ";
                         }
                     }
-
                 }
-            } else System.out.println("Error comparing coordinates to map");
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            }
+        } else {
+            System.out.println("Error comparing coordinates to map");
         }
     }
 
-    public String[][] getMap(){
+
+    public String[][] getMap() {
         return map;
     }
+
+    public List<Ship> getShipList() {
+        return shipList;
+    }
+
     public void shipPlacement() {
+
+        // Skapa objekt
+
+
+
         // Skapa lista + addera objekt
 
-        List<Ship> shipList = new ArrayList<>();
+        //List<Ship> shipList = new ArrayList<>();
         shipList.add(ship1);
         shipList.add(ship2);
         shipList.add(ship3);
@@ -206,14 +270,12 @@ public class Battleship {
         int tries = 0;
         mapSizeX = 10;
         mapSizeY = 10;
-        String water = "▓";
+        water = "▓";
 
 
         // Skapa karta (2D-array)
 
         map = new String[mapSizeY][mapSizeX];
-
-
 
 
         // Skriva ut tecken för vatten på kartan
@@ -251,7 +313,7 @@ public class Battleship {
 
                     // Slumpmässig placering och grundsökområde
 
-                    shipX = random.nextInt(mapSizeX-shipList.get(i).getLength() + 1);           // Kan ej placera ett skepp utanför kartan i X-led.
+                    shipX = random.nextInt(mapSizeX - shipList.get(i).getLength() + 1);           // Kan ej placera ett skepp utanför kartan i X-led.
                     shipY = random.nextInt(mapSizeY);
                     checkXStart = shipX;
                     checkXEnd = shipX + 1 + (shipList.get(i).getLength() - 1);
@@ -261,10 +323,10 @@ public class Battleship {
 
                     // Eventuell utökning av sökområdet beroende på placering
 
-                    if (shipX > 0) checkXStart --;
-                    if (shipX + (shipList.get(i).getLength() - 1) < mapSizeX - 1) checkXEnd ++;
-                    if (shipY > 0) checkYStart --;
-                    if (shipY < mapSizeY - 1) checkYEnd ++;
+                    if (shipX > 0) checkXStart--;
+                    if (shipX + (shipList.get(i).getLength() - 1) < mapSizeX - 1) checkXEnd++;
+                    if (shipY > 0) checkYStart--;
+                    if (shipY < mapSizeY - 1) checkYEnd++;
 
 
                     // Kontrollerar sökområdet
@@ -279,11 +341,11 @@ public class Battleship {
                     // Placerar skepp om det inte är någon kollision
 
                     if (collision == 0) {
-                        for (int j = shipY; j < shipY+1; j++) {
-                            for (int k = shipX; k < (shipX + 1) + (shipList.get(i).getLength()-1); k++) {
-                                map[j][k] = String.valueOf(shipList.get(i).getLength());
-                                //map[j][k] = "s";
-                                shipList.get(i).setCoordinatesOfShip(j,k);
+                        for (int j = shipY; j < shipY + 1; j++) {
+                            for (int k = shipX; k < (shipX + 1) + (shipList.get(i).getLength() - 1); k++) {
+                                //map[j][k] = String.valueOf(shipList.get(i).getLength());
+                                map[j][k] = "s";
+                                shipList.get(i).setCoordinatesOfShip(j, k);
                             }
                         }
                         successfulPlacement = true;
@@ -298,7 +360,7 @@ public class Battleship {
                     // Slumpmässig placering och grundsökområde
 
                     shipX = random.nextInt(mapSizeX);
-                    shipY = random.nextInt(mapSizeY-shipList.get(i).getLength() + 1);           // Kan ej placera ett skepp utanför kartan i Y-led.
+                    shipY = random.nextInt(mapSizeY - shipList.get(i).getLength() + 1);           // Kan ej placera ett skepp utanför kartan i Y-led.
                     checkXStart = shipX;
                     checkXEnd = shipX + 1;
                     checkYStart = shipY;
@@ -307,10 +369,10 @@ public class Battleship {
 
                     // Eventuell utökning av sökområdet beroende på placering
 
-                    if (shipX > 0) checkXStart --;
-                    if (shipX < (mapSizeX - 1)) checkXEnd ++;
-                    if (shipY > 0) checkYStart --;
-                    if (shipY + (shipList.get(i).getLength() - 1) < mapSizeY - 1) checkYEnd ++;
+                    if (shipX > 0) checkXStart--;
+                    if (shipX < (mapSizeX - 1)) checkXEnd++;
+                    if (shipY > 0) checkYStart--;
+                    if (shipY + (shipList.get(i).getLength() - 1) < mapSizeY - 1) checkYEnd++;
 
 
                     // Kontrollerar sökområdet
@@ -328,9 +390,9 @@ public class Battleship {
                     if (collision == 0) {
                         for (int j = shipY; j < shipY + 1 + (shipList.get(i).getLength() - 1); j++) {
                             for (int k = shipX; k < shipX + 1; k++) {
-                                map[j][k] = String.valueOf(shipList.get(i).getLength());
-                                //map[j][k] = "s";
-                                shipList.get(i).setCoordinatesOfShip(j,k);
+                                //map[j][k] = String.valueOf(shipList.get(i).getLength());
+                                map[j][k] = "s";
+                                shipList.get(i).setCoordinatesOfShip(j, k);
 
                             }
                         }
@@ -347,41 +409,33 @@ public class Battleship {
 
         for (int i = 0; i < mapSizeY; i++) {
             for (int j = 0; j < mapSizeX; j++) {
-                //System.out.print(map[i][j] + " ");
             }
-            //System.out.println();
         }
     }
 
-    public String randomShot(){
+    public String randomShot() {
         Random random = new Random();
         Map<Integer, String> intsMappedToChar = new HashMap<>();
-        intsMappedToChar.put(0,"a");
-        intsMappedToChar.put(1,"b");
-        intsMappedToChar.put(2,"c");
-        intsMappedToChar.put(3,"d");
-        intsMappedToChar.put(4,"e");
-        intsMappedToChar.put(5,"f");
-        intsMappedToChar.put(6,"g");
-        intsMappedToChar.put(7,"h");
-        intsMappedToChar.put(8,"i");
-        intsMappedToChar.put(9,"j");
-        int randomY = random.nextInt(10);
-        String coordinateY = intsMappedToChar.get(randomY);
-        String xAsString = String.valueOf(random.nextInt(10));
-        return xAsString.concat(coordinateY);
+        intsMappedToChar.put(0, "a");
+        intsMappedToChar.put(1, "b");
+        intsMappedToChar.put(2, "c");
+        intsMappedToChar.put(3, "d");
+        intsMappedToChar.put(4, "e");
+        intsMappedToChar.put(5, "f");
+        intsMappedToChar.put(6, "g");
+        intsMappedToChar.put(7, "h");
+        intsMappedToChar.put(8, "i");
+        intsMappedToChar.put(9, "j");
+        String randomCoordinates;
+        do {
+            int randomY = random.nextInt(10);
+            String coordinateY = intsMappedToChar.get(randomY);
+            int randomX = random.nextInt(10);
+            String xAsString = String.valueOf(randomX);
+            randomCoordinates = xAsString + coordinateY;  // Coordinate format: "a0", "b1", etc.
+        } while (coordinatesThatHaveBeenShot.contains(randomCoordinates));
+
+        coordinatesThatHaveBeenShot.add(randomCoordinates);
+        return randomCoordinates;
     }
-
 }
-
-
-
-
-// Skapa fler instanser av Skepp om det behövs
-
-
-// Markera skeppens positioner med bokstäver
-
-
-
-//slumpmässigt skott

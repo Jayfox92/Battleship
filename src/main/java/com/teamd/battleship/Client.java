@@ -5,13 +5,16 @@ import java.net.Socket;
 
 public class Client {
     Socket socket;
-    String message;
+    String ownMessage;
+    String opponentMessage;
     boolean firstRound = true;
+    Battleship battleShip;
+    int roundCounter = 0;
 
-    public Client(String message){
-        this.message = message;
+    public Client(String message, Battleship battleShip){
+        this.ownMessage = message;
+        this.battleShip = battleShip;
     }
-    public Client(){}
 
     public void connect(){
         try {
@@ -21,24 +24,31 @@ public class Client {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            Battleship clientShip = new Battleship();
-            clientShip.shipPlacement();
-            int roundCounter = 0;
-            while (Battleship.activeGame) {
+            battleShip.shipPlacement();
+
+            do{
                 if (firstRound){
-                    message = "i shot ";
-                    message = message.concat(clientShip.randomShot());
-                    System.out.println(roundCounter);
-                    writer.println(message);
+                    ownMessage = "i shot ";
+                    ownMessage = ownMessage.concat(battleShip.randomShot());
+                    System.out.println(ownMessage);
+                    System.out.println("Round "+roundCounter);
+                    writer.println(ownMessage);
                     roundCounter++;
                     firstRound=false;
                 }
-                clientShip.decideNextAction(reader.readLine());
-                writer.println(message);
+                opponentMessage = reader.readLine();
+                System.out.println(opponentMessage);
+                battleShip.serverTurn = false;
+                battleShip.decideNextAction(opponentMessage);
+                System.out.println(ownMessage);
+                writer.println(ownMessage);
+                System.out.println("Round "+roundCounter);
                 roundCounter++;
+            }while (Battleship.activeGame);
 
 
-            }
+
+
         } catch (IOException e){
             System.out.println(e.getMessage());
         }

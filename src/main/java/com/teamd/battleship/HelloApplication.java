@@ -37,7 +37,6 @@ public class HelloApplication extends Application {
     private void FirstScene() {
         primaryStage.setTitle("BattleShip");
 
-
         AnchorPane welcomePane = new AnchorPane();
 
         Text welcomeText = new Text("Welcome to BattleShip");
@@ -77,10 +76,11 @@ public class HelloApplication extends Application {
 
         AnchorPane anchorPane = new AnchorPane();
 
-        GridPane playerOne = createSpelplan();
-        GridPane playerTwo = createSpelplan();
+        GridPane playerBoard = ownPlayerBoard();
 
-        PositionGameBoards(playerOne, playerTwo);
+        GridPane opponentBoard = opponentPlayerBoard();
+
+        PositionGameBoards(playerBoard, opponentBoard);
 
         Button startaSpelKnapp = new Button("Starta spel");
         startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane,startaSpelKnapp)); // refererar till handleStartGame
@@ -97,14 +97,13 @@ public class HelloApplication extends Application {
         playerMotståndare.setLayoutX(455);
         playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
-        anchorPane.getChildren().addAll(playerOne, playerTwo, startaSpelKnapp, playerjag, playerMotståndare);
+        anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, playerjag, playerMotståndare);
 
         Scene scene = new Scene(anchorPane, 800, 450);
         primaryStage.setScene(scene);
 
         primaryStage.show();
     }
-
     private void PositionGameBoards(GridPane playerOne, GridPane playerTwo) { // här också
         playerOne.setLayoutX(125);
         playerOne.setLayoutY(45);
@@ -116,8 +115,33 @@ public class HelloApplication extends Application {
         startaSpelKnapp.setLayoutX(350);
         startaSpelKnapp.setLayoutY(310);
     }
+    private  GridPane opponentPlayerBoard(){
+        GridPane gridPane = new GridPane();
 
-    private GridPane createSpelplan() {
+        int size = 10;
+        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
+        for (int rad = 0; rad < size; rad++) {
+            for (int kolumn = 0; kolumn < size; kolumn++) {
+                Rectangle pane = new Rectangle(22, 22);
+                pane.setFill(Color.rgb(0, 204, 204));
+                pane.setStroke(Color.BLACK);
+                gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
+
+            }
+        }
+
+        // Add letters and numbers as labels
+        for (int i = 0; i < size; i++) {
+            Text columnLabel = new Text(Integer.toString(i));
+            Text rowLabel = new Text(Character.toString(letters[i]));
+            gridPane.add(columnLabel, i + 1, 0); // Numbers on x-axis
+            gridPane.add(rowLabel, 0, i + 1);    // Letters on y-axis
+        }
+
+        return gridPane;
+
+    }
+    private GridPane ownPlayerBoard() {
         GridPane gridPane = new GridPane();
         Battleship battleship = new Battleship();
 
@@ -130,13 +154,11 @@ public class HelloApplication extends Application {
                 Rectangle pane = new Rectangle(22, 22);
 
                 Map<String, Color> colorMap = Map.of( // skapar färg till båtarna här med hjälp av map
-                        "2", Color.GREY,
+                            "2", Color.GREY,
                         "3", Color.GREY,
                         "4", Color.GREY,
                         "5", Color.GREY
                 );
-
-
                 pane.setFill(Color.rgb(0, 204, 204));
                 pane.setStroke(Color.BLACK);
 
@@ -156,8 +178,6 @@ public class HelloApplication extends Application {
                     pane.setFill(colorMap.get(shipLength));
 
                 }
-
-
             }
         }
 
@@ -171,12 +191,14 @@ public class HelloApplication extends Application {
 
         return gridPane;
     }
+    private void uptadeGameBoard(){
+
+
+    }
 
 
     private void handleStartGame(AnchorPane anchorPane, Button startaSpelKnapp ) {
         startaSpelKnapp.setVisible(false); // gör så att knappen försvinner
-
-
         System.out.println("Spelet startar");
 
         TextField delayTextField = new TextField();
@@ -191,7 +213,7 @@ public class HelloApplication extends Application {
         startAutoShotButton.setLayoutX(134);
         startAutoShotButton.setLayoutY(340);
 
-            startAutoShotButton.setOnAction(event -> {
+        startAutoShotButton.setOnAction(event -> {
             String delayText = delayTextField.getText();
 
             try {
