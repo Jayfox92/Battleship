@@ -19,6 +19,7 @@ import javafx.collections.ObservableList;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class HelloApplication extends Application {
 
@@ -180,7 +181,8 @@ public class HelloApplication extends Application {
 
     private int [] getRandomPoint(){
         Random rand = new Random();
-        return new int[]{rand.nextInt(10), rand.nextInt(10)};
+        // First row and column is consumed by the labels
+        return new int[]{rand.nextInt(10) + 1, rand.nextInt(10) + 1};
     }
     private void placeShips(GridPane playerBoard, ArrayList<Skepp> fleet){
         // Get random point on board
@@ -293,14 +295,14 @@ public class HelloApplication extends Application {
         boolean pointHit;
         if (isPlayer1){
             // Player 1 turn
-            shootButtonText = "Player 1 shoots";
             pointHit = checkShootHit(2);
+            shootButtonText = "Player 2 shoots";
 
         }
         else {
             // Player 2 turn
-            shootButtonText = "Player 2 shoots";
             pointHit = checkShootHit(1);
+            shootButtonText = "Player 1 shoots";
         }
 
         shootButton.setText(shootButtonText);
@@ -326,7 +328,7 @@ public class HelloApplication extends Application {
 
         // Check if the rectangles in the range have a ship already
         for (Node node : children) {
-            if(GridPane.getRowIndex(node) == shootingPoint[0] && GridPane.getColumnIndex(node) == shootingPoint[1]) {
+            if(GridPane.getRowIndex(node) == shootingPoint[1] && GridPane.getColumnIndex(node) == shootingPoint[0]) {
                 Rectangle rect = (Rectangle) node;
                 if (rect.getFill().equals(Color.DARKGREEN)) {
                     pointHit = true;
@@ -355,7 +357,7 @@ public class HelloApplication extends Application {
                 break;
             }
             if ((activePlayerShootHistory[i][0] == shootingPoint[0]) && (activePlayerShootHistory[i][1] == shootingPoint[1])){
-                // Point is in history
+                // Point is in history, exit loop
                 isValidPoint = false;
             }
         }
