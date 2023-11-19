@@ -36,6 +36,9 @@ public class HelloApplication extends Application implements Runnable {
     private int lastYShot;
     private int lastXShot;
     private char action;
+    private Thread thread;
+    public void setThread(){this.thread = thread;
+    }
 
     public void setAction(char action){
         this.action = action;
@@ -245,19 +248,19 @@ public class HelloApplication extends Application implements Runnable {
     }
     public void updateOpponentBoard(char action){
         if (action=='m'){
-            StackPane pane = (StackPane) playerBoard.getChildren().get(lastYShot*boardSize+lastXShot);
+            StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
             Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
             rectangle.setFill(Color.CADETBLUE);
 
         }
         else if (action=='h'){
-            StackPane pane = (StackPane) playerBoard.getChildren().get(lastYShot*boardSize+lastXShot);
+            StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
             Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
             rectangle.setFill(Color.RED);
 
         }
         else if (action=='s'){
-            StackPane pane = (StackPane) playerBoard.getChildren().get(lastYShot*boardSize+lastXShot);
+            StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
             Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
             rectangle.setFill(Color.BLACK);
 
@@ -272,8 +275,7 @@ public class HelloApplication extends Application implements Runnable {
         for (int rad =0; rad < boardSize; rad++){
             for (int kolumn=0; kolumn<boardSize; kolumn++){
                 if (newMap[y][x].equals("hit")){
-                    Platform.runLater(()->
-                    rectangle.setFill(Color.RED));
+                    rectangle.setFill(Color.RED);
                 }else if (newMap[y][x].equals("sunk")){
                     rectangle.setFill(Color.BLACK);
 
