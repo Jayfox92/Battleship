@@ -35,7 +35,7 @@ public class Client {
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
             battleShip.shipPlacement();
-            thread.wait();
+
 
             for (int i=0; i < 10; i++) {
                 for (int j=0; j < 10; j++){
@@ -69,8 +69,6 @@ public class Client {
 
         } catch (IOException e){
             System.out.println(e.getMessage());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 

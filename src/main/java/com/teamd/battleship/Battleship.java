@@ -112,7 +112,6 @@ public class Battleship {
             Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
-            helloApplication.setAction('h');
             if (serverTurn) {
                 server.ownMessage = ownMessage;
                 serverTurn = false;
@@ -125,7 +124,6 @@ public class Battleship {
             Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
-            helloApplication.setAction('m');
             if (serverTurn) {
                 server.ownMessage = ownMessage;
                 serverTurn = false;
@@ -139,7 +137,6 @@ public class Battleship {
             Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
-            helloApplication.setAction('s');
             if (serverTurn) {
                 server.ownMessage = ownMessage;
                 serverTurn = false;
@@ -489,7 +486,11 @@ public class Battleship {
             try{Thread.sleep(1000);}catch (Exception ignore){}
 
         coordinatesThatHaveBeenShot.add(randomCoordinates);
-        helloApplication.storeLastShot(randomY, randomX);
+        int finalRandomY = randomY;
+        int finalRandomX = randomX;
+        Platform.runLater(()-> {
+            helloApplication.storeLastShot(finalRandomY, finalRandomX);
+        });
         return randomCoordinates;
     }
 }
