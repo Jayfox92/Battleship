@@ -21,7 +21,7 @@ import javafx.util.Duration;
 import java.util.Map;
 import java.util.Scanner;
 
-public class HelloApplication extends Application implements Runnable {
+public class HelloApplication extends Application {
 
 
     Scanner scanner = new Scanner(System.in);
@@ -76,19 +76,43 @@ public class HelloApplication extends Application implements Runnable {
     }
 
     public static void main(String[] args) {
-
-        Thread t = new Thread();
-        t.start();
-    }
-
-    public void run() {
         launch();
     }
 
+
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
-        FirstScene();
+        String appMode = System.getProperty("appMode");
+        if (appMode=="client") {
+            Battleship battleship = new Battleship();
+            HelloApplication helloApplication = this;
+            Client client = new Client("initial message", battleship);
+            battleship.setClient(client);
+            battleship.setHelloApplication(helloApplication);
+            helloApplication.setBattleship(battleship);
+            client.setHelloApplication(helloApplication);
+            this.primaryStage = primaryStage;
+            Platform.runLater(()->{FirstScene();});
+            Platform.runLater(() -> {
+                client.connect();
+            });
+
+        }else {
+            Battleship serverShip = new Battleship();
+            Server server = new Server("initial message",serverShip);
+            serverShip.setServer(server);
+            HelloApplication javafx = this;
+            serverShip.setHelloApplication(javafx);
+            javafx.setBattleship(serverShip);
+            server.setHelloApplication(javafx);
+            this.primaryStage = primaryStage;
+            FirstScene();
+            Platform.runLater(()-> {
+                server.connect();
+            });
+
+        }
     }
 
     private void FirstScene() {
@@ -112,7 +136,7 @@ public class HelloApplication extends Application implements Runnable {
         exitGame.setOnMouseExited(mouseEvent -> exitGame.setStyle("-fx-font-size: 18; -fx-background-color: dodgerblue; -fx-text-fill: white;"));
 
         Button startButton = new Button("BattleShip");
-        startButton.setOnAction(event -> SecondScene());
+        startButton.setOnAction(event ->{ Platform.runLater(()->SecondScene());});
         startButton.setStyle("-fx-font-size: 18; -fx-background-color: dodgerblue; -fx-text-fill:white ");
         startButton.setPrefWidth(150);
         startButton.setLayoutY(200);
