@@ -36,6 +36,9 @@ public class HelloApplication extends Application {
     // Store 100 points per board
     int[][] player1ShootHistory = new int[100][2];
     int[][] player2ShootHistory = new int[100][2];
+    // All ship boxes amount to 30. Game is over when the number = 0.
+    int player1LifeLine = 30;
+    int player2LifeLine = 30;
     int[][] activePlayerShootHistory = new int[100][2];
     int [] shootingPoint = new int[2];
     static boolean initShot = true;
@@ -297,22 +300,33 @@ public class HelloApplication extends Application {
     }
 
     private void handleShooting(AnchorPane anchorPane) {
-        boolean pointHit;
-        if (isPlayer1){
-            // Player 1 turn
-            pointHit = checkShootHit(2);
-            shootButtonText = "Player 2 shoots";
-        }
-        else {
-            // Player 2 turn
-            pointHit = checkShootHit(1);
-            shootButtonText = "Player 1 shoots";
-        }
+        if (!isGameOver()) {
+            boolean pointHit;
+            if (isPlayer1) {
+                // Player 1 turn
+                pointHit = checkShootHit(2);
+                shootButtonText = "Player 2 shoots";
+            } else {
+                // Player 2 turn
+                pointHit = checkShootHit(1);
+                shootButtonText = "Player 1 shoots";
+            }
 
-        displayMoves(pointHit);
+            if (pointHit) {
+                // Adjust opponent's lifeline
+                if (isPlayer1) {
+                    player2LifeLine--;
+                } else {
+                    player1LifeLine--;
+                }
+            }
+
+            displayMoves(pointHit);
+
+            isPlayer1 = !isPlayer1;
+        }
 
         shootButton.setText(shootButtonText);
-        isPlayer1 = !isPlayer1;
     }
 
     private void displayMoves(boolean pointHit) {
@@ -326,15 +340,13 @@ public class HelloApplication extends Application {
         }
         // Print some text
         if (pointHit){
-            if (false){    // Check for sinking ship
-                if (false){    // Check for game over
-                    // game over
-                    System.out.println("Game over!");
-                }
-                else{
-                    // Sunk ship
-                    System.out.println(currPlayer + ": s shot " + coordinateText);
-                }
+            if (isGameOver()) {    // Check for game over
+                shootButtonText = "Game over - " + currPlayer + " wins!";
+                System.out.println(shootButtonText);
+                shootButton.setDisable(true);
+            }
+            else if (false){ // Check for sinking ship
+                System.out.println(currPlayer + ": s shot " + coordinateText);
             }
             else{
                 // hit
@@ -344,6 +356,10 @@ public class HelloApplication extends Application {
         else{
             System.out.println(currPlayer + ": m shot " + coordinateText);
         }
+    }
+
+    private boolean isGameOver() {
+        return (player1LifeLine <= 0 || player2LifeLine <= 0);
     }
 
     private boolean checkShootHit(int opponent) {
