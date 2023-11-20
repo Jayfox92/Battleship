@@ -1,5 +1,7 @@
 package com.teamd.battleship;
 
+import javafx.application.Platform;
+
 import java.util.*;
 
 
@@ -31,19 +33,23 @@ public class Battleship {
     Ship ship10 = new Ship(2, "s9", "ubåt");
 
 
-    List<Ship> shipList = new ArrayList<>();
-    Set<String> coordinatesThatHaveBeenShot = new HashSet<>();
-    Client client;
-    Server server;
+    private List<Ship> shipList = new ArrayList<>();
+    private Set<String> coordinatesThatHaveBeenShot = new HashSet<>();
+    private Client client;
+    private Server server;
+    private HelloApplication helloApplication;
 
-    String[][] map;
-    int mapSizeX;
-    int mapSizeY;
-    String water;
-    String ownMessage = "";
-    String opponentMessage;
-    static boolean activeGame = true;
+    private String[][] map;
+    private int mapSizeX;
+    private int mapSizeY;
+    private String water;
+    private String ownMessage = "";
+    private String opponentMessage;
+    private boolean activeGame = true;
     boolean serverTurn = true;
+    public boolean isActiveGame(){
+        return activeGame;
+    }
 
 
     public static void main(String[] args) {
@@ -73,6 +79,7 @@ public class Battleship {
     public void setServer(Server server){
         this.server = server;
     }
+    public void setHelloApplication(HelloApplication helloApplication){this.helloApplication = helloApplication;}
     public void decideNextAction(String message) {
 
         if (!activeGame) {
@@ -91,6 +98,7 @@ public class Battleship {
 
 
 
+
             if (serverTurn) {
                 server.ownMessage = ownMessage;
                 serverTurn = false;
@@ -101,8 +109,10 @@ public class Battleship {
             }
 
         } else if (action == 'h') {//shot hit //ai
+            Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
+            helloApplication.setAction('h');
             if (serverTurn) {
                 server.ownMessage = ownMessage;
                 serverTurn = false;
@@ -112,8 +122,10 @@ public class Battleship {
 
             }
         } else if (action == 'm') {//shot miss //random
+            Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
+            helloApplication.setAction('m');
             if (serverTurn) {
                 server.ownMessage = ownMessage;
                 serverTurn = false;
@@ -124,8 +136,10 @@ public class Battleship {
             }
 
         } else if (action == 's') {//shot sänkt //random
+            Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
+            helloApplication.setAction('s');
             if (serverTurn) {
                 server.ownMessage = ownMessage;
                 serverTurn = false;
@@ -192,6 +206,7 @@ public class Battleship {
         if (map[list.get(0)][list.get(1)].equals("▓")) {
             ownMessage = "m shot ";
             System.out.println("Found water on map");
+            map[list.get(0)][list.get(1)] = "water";
         } else if (map[list.get(0)][list.get(1)].equals("s")) {
             System.out.println("Found ship on map");
 
@@ -208,6 +223,8 @@ public class Battleship {
                             }
                             if (shipList.get(i).isSunk()){
                                 ownMessage = "s shot ";
+                                map[list.get(0)][list.get(1)] = "sunk";
+                                Platform.runLater(() -> helloApplication.updateOwnGameBoard(list.get(0), list.get(1)));
                             System.out.println("Ship "+shipList.get(i).getName()+" is sunk");
                             int amountOfSunkShips = 0;
                             for (int k = 0; k < shipList.size(); k++) {
@@ -225,11 +242,18 @@ public class Battleship {
                             }
                         } else {
                             ownMessage = "h shot ";
+                            map[list.get(0)][list.get(1)] = "hit";
+                            Platform.runLater(()->helloApplication.updateOwnGameBoard(list.get(0), list.get(1)));
                         }
                     }
                 }
             }
-        } else {
+        } else if (map[list.get(0)][list.get(1)].equals("water")||map[list.get(0)][list.get(1)].equals("hit")||map[list.get(0)][list.get(1)].equals("sunk")){
+            System.out.println("Error, same coordinates are shot, we found "+map[list.get(0)][list.get(1)]+" on the map which exist on coordinates "+list.get(0)+" "+list.get(1));
+            System.out.println("Check randomShot method for errors");
+
+        }
+        else {
             System.out.println("Error comparing coordinates to map");
         }
     }
@@ -439,15 +463,20 @@ public class Battleship {
         intsMappedToChar.put(8, "i");
         intsMappedToChar.put(9, "j");
         String randomCoordinates;
+        int randomY;
+        int randomX;
         do {
-            int randomY = random.nextInt(10);
+            randomY = random.nextInt(10);
             String coordinateY = intsMappedToChar.get(randomY);
-            int randomX = random.nextInt(10);
+            randomX = random.nextInt(10);
             String xAsString = String.valueOf(randomX);
             randomCoordinates = xAsString + coordinateY;  // Coordinate format: "a0", "b1", etc.
         } while (coordinatesThatHaveBeenShot.contains(randomCoordinates));
 
+            try{Thread.sleep(1000);}catch (Exception ignore){}
+
         coordinatesThatHaveBeenShot.add(randomCoordinates);
+        helloApplication.storeLastShot(randomY, randomX);
         return randomCoordinates;
     }
 }

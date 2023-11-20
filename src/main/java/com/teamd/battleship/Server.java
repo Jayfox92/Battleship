@@ -6,17 +6,20 @@ import java.net.Socket;
 
 public class Server {
 
-    ServerSocket serverSocket;
-    Socket socket;
+    private ServerSocket serverSocket;
+    private Socket socket;
     String ownMessage;
-    String opponentMessage;
-    Battleship battleShip;
+    private String opponentMessage;
+    private Battleship battleShip;
+    private HelloApplication helloApplication;
     int roundCounter = 0;
     public Server(String message, Battleship battleship){
         this.ownMessage = message;
         this.battleShip = battleship;
     }
-    public Server(){}
+    public void setHelloApplication(HelloApplication helloApplication){
+        this.helloApplication = helloApplication;
+    }
 
     public void connect(){
         try {
@@ -45,7 +48,7 @@ public class Server {
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;
-            } while (Battleship.activeGame);
+            } while (battleShip.isActiveGame());
 
 
 

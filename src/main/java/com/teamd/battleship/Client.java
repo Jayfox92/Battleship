@@ -1,19 +1,29 @@
 package com.teamd.battleship;
 
+import javafx.application.Application;
+
 import java.io.*;
 import java.net.Socket;
 
 public class Client {
-    Socket socket;
+    private Socket socket;
     String ownMessage;
-    String opponentMessage;
-    boolean firstRound = true;
-    Battleship battleShip;
-    int roundCounter = 0;
+    private String opponentMessage;
+    private boolean firstRound = true;
+    private Battleship battleShip;
+    private HelloApplication helloApplication;
+    private int roundCounter = 0;
+    private Thread thread;
 
     public Client(String message, Battleship battleShip){
         this.ownMessage = message;
         this.battleShip = battleShip;
+    }
+    public void setHelloApplication(HelloApplication helloApplication){
+        this.helloApplication = helloApplication;
+    }
+    public void setThread(Thread thread){
+        this.thread = thread;
     }
 
     public void connect(){
@@ -25,6 +35,14 @@ public class Client {
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
             battleShip.shipPlacement();
+            thread.wait();
+
+            for (int i=0; i < 10; i++) {
+                for (int j=0; j < 10; j++){
+                    System.out.print(battleShip.getMap()[i][j]);
+                }
+                System.out.println();
+            }
 
             do{
                 if (firstRound){
@@ -44,13 +62,15 @@ public class Client {
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;
-            }while (Battleship.activeGame);
+            }while (battleShip.isActiveGame());
 
 
 
 
         } catch (IOException e){
             System.out.println(e.getMessage());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
