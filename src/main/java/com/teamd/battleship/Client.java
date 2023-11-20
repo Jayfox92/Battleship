@@ -34,7 +34,7 @@ public class Client {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            battleShip.shipPlacement();
+            //battleShip.shipPlacement();
 
 
             for (int i=0; i < 10; i++) {

@@ -7,8 +7,7 @@ public class ClientMain {
     public static void main(String[] args) {
 
         System.setProperty("appMode","client");
-        new Thread(()->{
-        Application.launch(HelloApplication.class, args);}).start();
+        Application.launch(HelloApplication.class, args);
 
 
 

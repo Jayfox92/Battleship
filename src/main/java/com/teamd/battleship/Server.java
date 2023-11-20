@@ -30,7 +30,7 @@ public class Server {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            battleShip.shipPlacement();
+            //battleShip.shipPlacement();
             for (int i=0; i < 10; i++) {
                 for (int j=0; j < 10; j++){
                     System.out.print(battleShip.getMap()[i][j]);

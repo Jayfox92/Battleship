@@ -88,35 +88,42 @@ public class HelloApplication extends Application {
             Battleship battleship = new Battleship();
             HelloApplication helloApplication = this;
             Client client = new Client("initial message", battleship);
+            this.client = client;
             battleship.setClient(client);
             battleship.setHelloApplication(helloApplication);
             helloApplication.setBattleship(battleship);
             client.setHelloApplication(helloApplication);
             this.primaryStage = primaryStage;
+            battleship.shipPlacement();
             Platform.runLater(()->{FirstScene();});
-            Platform.runLater(() -> {
+            Thread thread = new Thread(() -> {
                 client.connect();
             });
+            this.thread = thread;
 
         }else {
             Battleship serverShip = new Battleship();
             Server server = new Server("initial message",serverShip);
+            this.server = server;
             serverShip.setServer(server);
             HelloApplication javafx = this;
             serverShip.setHelloApplication(javafx);
             javafx.setBattleship(serverShip);
             server.setHelloApplication(javafx);
             this.primaryStage = primaryStage;
-            FirstScene();
-            Platform.runLater(()-> {
-                server.connect();
-            });
+            serverShip.shipPlacement();
+            Platform.runLater(()->{FirstScene();});
+            Thread thread = new Thread(()->{
+                server.connect();});
+            this.thread = thread;
+
 
         }
     }
 
     private void FirstScene() {
-        primaryStage.setTitle("BattleShip");
+        String appMode = System.getProperty("appMode");
+        primaryStage.setTitle("BattleShip "+appMode);
 
         AnchorPane welcomePane = new AnchorPane();
 
@@ -153,7 +160,8 @@ public class HelloApplication extends Application {
     }
 
     private void SecondScene() {
-        primaryStage.setTitle("BattleShip");
+        String appMode = System.getProperty("appMode");
+        primaryStage.setTitle("BattleShip "+appMode);
 
         AnchorPane anchorPane = new AnchorPane();
 
@@ -164,21 +172,35 @@ public class HelloApplication extends Application {
         PositionGameBoards(playerBoard, opponentBoard);
 
         Button startaSpelKnapp = new Button("Starta spel");
-        startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane,startaSpelKnapp)); // refererar till handleStartGame
+        startaSpelKnapp.setOnAction(event -> thread.start());
+
+
+
+        //startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane,startaSpelKnapp)); // refererar till handleStartGame
         layoutStartGameButton(startaSpelKnapp);
 
 
-        Text playerjag = new Text("Jag");
+        Text playerjag = new Text(appMode+"'s board");
         playerjag.setLayoutX(230);
         playerjag.setLayoutY(35);
         playerjag.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
-        Text playerMotståndare = new Text("Motståndare");
-        playerMotståndare.setLayoutY(35);
-        playerMotståndare.setLayoutX(455);
-        playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
+        if (appMode.equals("client")){
+            Text playerMotståndare = new Text("server's board");
+            playerMotståndare.setLayoutY(35);
+            playerMotståndare.setLayoutX(455);
+            playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
-        anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, playerjag, playerMotståndare);
+            anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, playerjag, playerMotståndare);
+        } else {
+            Text playerMotståndare = new Text("client's board");
+            playerMotståndare.setLayoutY(35);
+            playerMotståndare.setLayoutX(455);
+            playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
+
+            anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, playerjag, playerMotståndare);
+        }
+
 
         Scene scene = new Scene(anchorPane, 800, 450);
         primaryStage.setScene(scene);
@@ -237,14 +259,14 @@ public class HelloApplication extends Application {
                 pane.setFill(Color.rgb(0, 204, 204));
                 pane.setStroke(Color.BLACK);
 
-                StackPane stackPane = new StackPane();
-                stackPane.getChildren().addAll(pane);
+                //StackPane stackPane = new StackPane();
+                //stackPane.getChildren().addAll(pane);
 
                 //Label label = new Label(""); // Gör Tom label för att ta bort siffrorna
 
                 //stackPane.getChildren().addAll(label);
 
-                gridPane.add(stackPane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
+                gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
                 gridPane.requestLayout();
 
                 if (battleship.getMap()[rad][kolumn].contains("s")) {
@@ -271,21 +293,20 @@ public class HelloApplication extends Application {
 
     }
     public void updateOpponentBoard(char action){
+        Rectangle rectangle = (Rectangle) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
         if (action=='m'){
-            StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
-            Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
-            rectangle.setFill(Color.CADETBLUE);
+            rectangle.setFill(Color.FLORALWHITE);
 
         }
         else if (action=='h'){
-            StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
-            Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
+            //StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
+            //Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
             rectangle.setFill(Color.RED);
 
         }
         else if (action=='s'){
-            StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
-            Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
+            //StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
+            //Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
             rectangle.setFill(Color.BLACK);
 
         }
@@ -293,21 +314,26 @@ public class HelloApplication extends Application {
 
     public void updateOwnGameBoard(int y, int x){
 
-        StackPane pane = (StackPane) playerBoard.getChildren().get(y*boardSize+x);
-        Rectangle rectangle = (Rectangle) pane.getChildren().get(y*boardSize+x);
+        //StackPane pane = (StackPane) playerBoard.getChildren().get(y*boardSize+x);
+        Rectangle rectangle = (Rectangle) playerBoard.getChildren().get(y*boardSize+x);
         String[][] newMap = battleship.getMap();
-        for (int rad =0; rad < boardSize; rad++){
-            for (int kolumn=0; kolumn<boardSize; kolumn++){
-                if (newMap[y][x].equals("hit")){
-                    rectangle.setFill(Color.RED);
-                }else if (newMap[y][x].equals("sunk")){
-                    rectangle.setFill(Color.BLACK);
-
+        if (newMap[y][x].equals("hit")){
+            ((Rectangle) playerBoard.getChildren().get(y*boardSize+x)).setFill(Color.RED);
+            return;
+        } else if (newMap[y][x].equals("sunk")){
+            ((Rectangle) playerBoard.getChildren().get(y*boardSize+x)).setFill(Color.BLACK);
+            for (int rad =0; rad < boardSize; rad++){
+                for (int kolumn=0; kolumn<boardSize; kolumn++){
+                    if (newMap[y][x].equals("sunk")){
+                        rectangle.setFill(Color.BLACK);
+                    }
                 }
             }
         }
-
     }
+
+
+
 
 
     private void handleStartGame(AnchorPane anchorPane, Button startaSpelKnapp ) {
