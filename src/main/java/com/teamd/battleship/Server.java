@@ -41,10 +41,10 @@ public class Server {
 
             do{
                 opponentMessage = reader.readLine();
-                System.out.println(opponentMessage);
+                System.out.println("opponent message: "+opponentMessage);
                 battleShip.serverTurn = true;
                 battleShip.decideNextAction(opponentMessage);
-                System.out.println(ownMessage);
+                System.out.println("own message: "+ownMessage);
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;

@@ -111,6 +111,19 @@ public class Battleship {
         } else if (action == 'h') {//shot hit //ai
             Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
+            if (ownMessage.equals("game over")){
+                if (serverTurn) {
+                    server.ownMessage = ownMessage;
+                    serverTurn = false;
+                    activeGame = false;
+                    return;
+                } else {
+                    client.ownMessage = ownMessage;
+                    serverTurn = true;
+                    activeGame = false;
+                    return;
+                }
+            }
             ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
                 server.ownMessage = ownMessage;
@@ -123,6 +136,19 @@ public class Battleship {
         } else if (action == 'm') {//shot miss //random
             Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
+            if (ownMessage.equals("game over")){
+                if (serverTurn) {
+                    server.ownMessage = ownMessage;
+                    serverTurn = false;
+                    activeGame = false;
+                    return;
+                } else {
+                    client.ownMessage = ownMessage;
+                    serverTurn = true;
+                    activeGame = false;
+                    return;
+                }
+            }
             ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
                 server.ownMessage = ownMessage;
@@ -136,6 +162,19 @@ public class Battleship {
         } else if (action == 's') {//shot sänkt //random
             Platform.runLater(()->helloApplication.updateOpponentBoard(action));
             readCoordinates(message);
+            if (ownMessage.equals("game over")){
+                if (serverTurn) {
+                    server.ownMessage = ownMessage;
+                    serverTurn = false;
+                    activeGame = false;
+                    return;
+                } else {
+                    client.ownMessage = ownMessage;
+                    serverTurn = true;
+                    activeGame = false;
+                    return;
+                }
+            }
             ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
                 server.ownMessage = ownMessage;
@@ -149,12 +188,12 @@ public class Battleship {
 
         } else if (action == 'g') {//game over
             if (serverTurn) {
-                System.out.println("You win, congratulations!");
+                System.out.println(System.getProperty("appMode")+" win, congratulations!");
                 serverTurn = false;
                 activeGame = false;
 
             } else {
-                System.out.println("You win, congratulations!");
+                System.out.println(System.getProperty("appMode")+ " win, congratulations!");
                 serverTurn = true;
                 activeGame = false;
 
@@ -210,19 +249,27 @@ public class Battleship {
             for (int i = 0; i < shipList.size(); i++) {
                 //List<Integer> shipCoordinates = shipList.get(i).getCoordinatesOfShip();
                 for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size()-1; j += 2) {
-                    if (j + 1 < shipList.get(i).getCoordinatesOfShip().size()) {
+                    if (j + 1 <= shipList.get(i).getCoordinatesOfShip().size()) {
                         if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
                             shipList.get(i).setHits(1);
-                            try{shipList.get(i).getCoordinatesOfShip().remove(j+0);
+                            /*try{shipList.get(i).getCoordinatesOfShip().remove(j+0);
                             shipList.get(i).getCoordinatesOfShip().remove(j+0);
                             }catch (IndexOutOfBoundsException e){
                                 System.out.println(e.getMessage());
-                            }
+                            }*/
                             if (shipList.get(i).isSunk()){
                                 ownMessage = "s shot ";
-                                map[list.get(0)][list.get(1)] = "sunk";
-                                Platform.runLater(() -> helloApplication.updateOwnGameBoard(list.get(0), list.get(1)));
-                            System.out.println("Ship "+shipList.get(i).getName()+" is sunk");
+                                for (int k=0; k < shipList.get(i).getCoordinatesOfShip().size()-1; k+=2){
+                                    int y = shipList.get(i).getCoordinatesOfShip().get(k);
+                                    int x = shipList.get(i).getCoordinatesOfShip().get(k+1);
+                                    map[y][x] = "sunk";
+                                    int finalI = i;
+                                    Platform.runLater(() -> helloApplication.updateOwnGameBoard(list.get(0), list.get(1),shipList.get(finalI).getCoordinatesOfShip()));
+
+                                }
+
+
+                            System.out.println("Ship "+shipList.get(i).getName()+" is sunk for "+System.getProperty("appMode"));
                             int amountOfSunkShips = 0;
                             for (int k = 0; k < shipList.size(); k++) {
                                 if (shipList.get(k).isSunk()) {
@@ -234,13 +281,17 @@ public class Battleship {
                             if (amountOfSunkShips >= shipList.size()) {
                                 ownMessage = "game over";
                                 System.out.println("All your ships are sunk, you lose. Sorry!");
+
                             }
 
                             }
+
                         } else {
                             ownMessage = "h shot ";
+                            shipList.get(i).setHits(1);
                             map[list.get(0)][list.get(1)] = "hit";
-                            Platform.runLater(()->helloApplication.updateOwnGameBoard(list.get(0), list.get(1)));
+                            int finalI1 = i;
+                            Platform.runLater(()->helloApplication.updateOwnGameBoard(list.get(0), list.get(1), shipList.get(finalI1).getCoordinatesOfShip()));
                         }
                     }
                 }

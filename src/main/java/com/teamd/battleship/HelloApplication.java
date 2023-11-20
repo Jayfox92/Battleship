@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -312,21 +313,17 @@ public class HelloApplication extends Application {
         }
     }
 
-    public void updateOwnGameBoard(int y, int x){
-
-        //StackPane pane = (StackPane) playerBoard.getChildren().get(y*boardSize+x);
-        Rectangle rectangle = (Rectangle) playerBoard.getChildren().get(y*boardSize+x);
+    public void updateOwnGameBoard(int y, int x, List<Integer> listOfCoordinates) {
         String[][] newMap = battleship.getMap();
-        if (newMap[y][x].equals("hit")){
-            ((Rectangle) playerBoard.getChildren().get(y*boardSize+x)).setFill(Color.RED);
-            return;
-        } else if (newMap[y][x].equals("sunk")){
-            ((Rectangle) playerBoard.getChildren().get(y*boardSize+x)).setFill(Color.BLACK);
-            for (int rad =0; rad < boardSize; rad++){
-                for (int kolumn=0; kolumn<boardSize; kolumn++){
-                    if (newMap[y][x].equals("sunk")){
-                        rectangle.setFill(Color.BLACK);
-                    }
+        if (newMap[y][x].equals("hit")) {
+            ((Rectangle) playerBoard.getChildren().get(y * boardSize + x)).setFill(Color.RED);
+        } else if (newMap[y][x].equals("sunk")) {
+            ((Rectangle) playerBoard.getChildren().get(y * boardSize + x)).setFill(Color.BLACK);
+            for (int i = 0; i < listOfCoordinates.size() - 1; i += 2) {
+                int yy = listOfCoordinates.get(i);
+                int xx = listOfCoordinates.get(i + 1);
+                if (newMap[y][xx].equals("sunk")) {
+                    ((Rectangle) playerBoard.getChildren().get(yy * boardSize + xx)).setFill(Color.BLACK);
                 }
             }
         }
