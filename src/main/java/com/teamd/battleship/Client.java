@@ -48,17 +48,17 @@ public class Client {
                 if (firstRound){
                     ownMessage = "i shot ";
                     ownMessage = ownMessage.concat(battleShip.randomShot());
-                    System.out.println(ownMessage);
+                    System.out.println("own message: "+ownMessage);
                     System.out.println("Round "+roundCounter);
                     writer.println(ownMessage);
                     roundCounter++;
                     firstRound=false;
                 }
                 opponentMessage = reader.readLine();
-                System.out.println(opponentMessage);
+                System.out.println("opponent message: "+opponentMessage);
                 battleShip.serverTurn = false;
                 battleShip.decideNextAction(opponentMessage);
-                System.out.println(ownMessage);
+                System.out.println("own message: "+ownMessage);
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;
