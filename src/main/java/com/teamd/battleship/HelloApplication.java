@@ -38,6 +38,9 @@ public class HelloApplication extends Application {
     int[][] player2ShootHistory = new int[100][2];
     int[][] activePlayerShootHistory = new int[100][2];
     int [] shootingPoint = new int[2];
+    static boolean initShot = true;
+    char[] letterLabels = "ABCDEFGHIJ".toCharArray(); // added char array
+
     public static void main(String[] args) {
         launch();
     }
@@ -124,7 +127,7 @@ public class HelloApplication extends Application {
     private GridPane createSpelplan() {
         GridPane gridPane = new GridPane();
         int size = 10;
-        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
+
         for (int rad = 0; rad < size; rad++) {
             for (int kolumn = 0; kolumn < size; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
@@ -138,7 +141,7 @@ public class HelloApplication extends Application {
         // Add letters and numbers as labels
         for (int i = 0; i < size; i++) {
             Text columnLabel = new Text(Integer.toString(i));
-            Text rowLabel = new Text(Character.toString(letters[i]));
+            Text rowLabel = new Text(Character.toString(letterLabels[i]));
             gridPane.add(columnLabel, i + 1, 0); // Numbers on x-axis
             gridPane.add(rowLabel, 0, i + 1);    // Letters on y-axis
         }
@@ -186,45 +189,47 @@ public class HelloApplication extends Application {
     }
     private void placeShips(GridPane playerBoard, ArrayList<Skepp> fleet){
         // Get random point on board
-        int x, y, shipLength;
+        int shipLength;
         int start = 0, fixed = 0;
         boolean horizontal = false;
+        int[] randPt = {-1, -1};
 
         for(int i = 0; i < 10; i++) {
             boolean pointOK = false;
             while (!pointOK) {
-                x = getRandomPoint()[0];
-                y = getRandomPoint()[1];
+                // x = randPt[0]
+                // y = randPt[1]
+                randPt = getRandomPoint();
                 shipLength = fleet.get(i).getLängd();
 
                 // check if ship fits left, up, right, down
-                if (x - shipLength >= 0) {
+                if (randPt[0] - shipLength >= 0) {
                     // Check left
                     horizontal = true;
-                    start = x - shipLength;
-                    fixed = y;
+                    start = randPt[0] - shipLength;
+                    fixed = randPt[1];
                     pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
                 }
-                if (!pointOK && (y - shipLength >= 0)) {
+                if (!pointOK && (randPt[1] - shipLength >= 0)) {
                     // Check up
                     horizontal = false;
-                    start = y - shipLength;
-                    fixed = x;
+                    start = randPt[1] - shipLength;
+                    fixed = randPt[0];
                     pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
 
                 }
-                if (!pointOK && (x - shipLength < 0)) {
+                if (!pointOK && (randPt[0] - shipLength < 0)) {
                     // Check right
                     horizontal = true;
-                    start = x;
-                    fixed = y;
+                    start = randPt[0];
+                    fixed = randPt[1];
                     pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
                 }
-                if (!pointOK && (y - shipLength < 0)) {
+                if (!pointOK && (randPt[1] - shipLength < 0)) {
                     // Check down
                     horizontal = false;
-                    start = y;
-                    fixed = x;
+                    start = randPt[1];
+                    fixed = randPt[0];
                     pointOK = checkBoard(playerBoard, start, shipLength, fixed, horizontal);
                 }
 
@@ -297,7 +302,6 @@ public class HelloApplication extends Application {
             // Player 1 turn
             pointHit = checkShootHit(2);
             shootButtonText = "Player 2 shoots";
-
         }
         else {
             // Player 2 turn
@@ -305,8 +309,41 @@ public class HelloApplication extends Application {
             shootButtonText = "Player 1 shoots";
         }
 
+        displayMoves(pointHit);
+
         shootButton.setText(shootButtonText);
         isPlayer1 = !isPlayer1;
+    }
+
+    private void displayMoves(boolean pointHit) {
+        // Valid point is at shootingPoint
+        String coordinateText = shootingPoint[0] - 1 + String.valueOf(letterLabels[shootingPoint[1] - 1]);
+        String currPlayer = isPlayer1 ? "Player 1" : "Player 2";
+
+        if (initShot){
+            System.out.println(currPlayer + ": i shot " + coordinateText);
+            initShot = false;
+        }
+        // Print some text
+        if (pointHit){
+            if (false){    // Check for sinking ship
+                if (false){    // Check for game over
+                    // game over
+                    System.out.println("Game over!");
+                }
+                else{
+                    // Sunk ship
+                    System.out.println(currPlayer + ": s shot " + coordinateText);
+                }
+            }
+            else{
+                // hit
+                System.out.println(currPlayer + ": h shot " + coordinateText);
+            }
+        }
+        else{
+            System.out.println(currPlayer + ": m shot " + coordinateText);
+        }
     }
 
     private boolean checkShootHit(int opponent) {
