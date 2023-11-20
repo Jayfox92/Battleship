@@ -1,5 +1,7 @@
 package com.teamd.battleship;
 
+import javafx.application.Platform;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,6 +13,8 @@ public class Server {
     String ownMessage;
     private String opponentMessage;
     private Battleship battleShip;
+
+
     private HelloApplication helloApplication;
     int roundCounter = 0;
     public Server(String message, Battleship battleship){
@@ -56,6 +60,35 @@ public class Server {
         catch (IOException e){
             System.out.println(e.getMessage());
         }
+
+
     }
+
+    public void processServerEvent(String result, int x, int y) {
+        char action = convertResultToAction(result); // Implement this
+
+        // Update UI through the HelloApplication instance
+        Platform.runLater(() -> {
+            helloApplication.externalUpdateMethod(action, x, y);
+        });
+    }
+
+
+    // Utility method to convert game results to action chars
+    private char convertResultToAction(String result) {
+        // Implement this based on your game logic
+        // Example:
+        switch (result) {
+            case "hit":
+                return 'h';
+            case "miss":
+                return 'm';
+            case "sunk":
+                return 's';
+            default:
+                return ' '; // Some default or error handling
+        }
+    }
+
 
 }

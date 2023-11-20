@@ -40,8 +40,8 @@ public class Battleship {
     private HelloApplication helloApplication;
 
     private String[][] map;
-    private int mapSizeX;
-    private int mapSizeY;
+    public int mapSizeX;
+    public int mapSizeY;
     private String water;
     private String ownMessage = "";
     private String opponentMessage;
