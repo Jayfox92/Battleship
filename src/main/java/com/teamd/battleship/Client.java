@@ -44,7 +44,7 @@ public class Client {
                 System.out.println();
             }
 
-            do{
+            while (battleShip.isActiveGame()){
                 if (firstRound){
                     ownMessage = "i shot ";
                     ownMessage = ownMessage.concat(battleShip.randomShot());
@@ -62,7 +62,7 @@ public class Client {
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;
-            }while (battleShip.isActiveGame());
+            }
 
 
 

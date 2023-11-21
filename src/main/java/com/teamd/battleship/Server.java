@@ -39,7 +39,7 @@ public class Server {
             }
 
 
-            do{
+            while (battleShip.isActiveGame()){
                 opponentMessage = reader.readLine();
                 System.out.println("opponent message: "+opponentMessage);
                 battleShip.serverTurn = true;
@@ -48,7 +48,7 @@ public class Server {
                 writer.println(ownMessage);
                 System.out.println("Round "+roundCounter);
                 roundCounter++;
-            } while (battleShip.isActiveGame());
+            }
 
 
 

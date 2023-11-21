@@ -104,10 +104,9 @@ public class HelloApplication extends Application {
 
         }else {
             Battleship serverShip = new Battleship();
-            Server server = new Server("initial message",serverShip);
-            this.server = server;
-            serverShip.setServer(server);
             HelloApplication javafx = this;
+            Server server = new Server("initial message",serverShip);
+            serverShip.setServer(server);
             serverShip.setHelloApplication(javafx);
             javafx.setBattleship(serverShip);
             server.setHelloApplication(javafx);
@@ -182,7 +181,7 @@ public class HelloApplication extends Application {
 
 
         Text playerjag = new Text(appMode+"'s board");
-        playerjag.setLayoutX(230);
+        playerjag.setLayoutX(165);
         playerjag.setLayoutY(35);
         playerjag.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
@@ -240,6 +239,7 @@ public class HelloApplication extends Application {
             Text rowLabel = new Text(Character.toString(letters[i]));
             gridPane.add(columnLabel, i + 1, 0); // Numbers on x-axis
             gridPane.add(rowLabel, 0, i + 1);    // Letters on y-axis
+
         }
 
         return gridPane;
@@ -295,6 +295,7 @@ public class HelloApplication extends Application {
     }
     public void updateOpponentBoard(char action){
         Rectangle rectangle = (Rectangle) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
+
         if (action=='m'){
             rectangle.setFill(Color.FLORALWHITE);
 
@@ -308,7 +309,7 @@ public class HelloApplication extends Application {
         else if (action=='s'){
             //StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
             //Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
-            rectangle.setFill(Color.BLACK);
+            rectangle.setFill(Color.RED);
 
         }
     }
@@ -319,12 +320,11 @@ public class HelloApplication extends Application {
             ((Rectangle) playerBoard.getChildren().get(y * boardSize + x)).setFill(Color.RED);
         } else if (newMap[y][x].equals("sunk")) {
             ((Rectangle) playerBoard.getChildren().get(y * boardSize + x)).setFill(Color.BLACK);
-            for (int i = 0; i < listOfCoordinates.size() - 1; i += 2) {
+            for (int i = 0; i < listOfCoordinates.size(); i += 2) {
                 int yy = listOfCoordinates.get(i);
                 int xx = listOfCoordinates.get(i + 1);
-                if (newMap[y][xx].equals("sunk")) {
-                    ((Rectangle) playerBoard.getChildren().get(yy * boardSize + xx)).setFill(Color.BLACK);
-                }
+                ((Rectangle) playerBoard.getChildren().get(yy * boardSize + xx)).setFill(Color.BLACK);
+
             }
         }
     }

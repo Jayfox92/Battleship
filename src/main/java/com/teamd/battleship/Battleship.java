@@ -3,6 +3,7 @@ package com.teamd.battleship;
 import javafx.application.Platform;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 
 public class Battleship {
@@ -47,6 +48,7 @@ public class Battleship {
     private String opponentMessage;
     private boolean activeGame = true;
     boolean serverTurn = true;
+
     public boolean isActiveGame(){
         return activeGame;
     }
@@ -82,11 +84,6 @@ public class Battleship {
     public void setHelloApplication(HelloApplication helloApplication){this.helloApplication = helloApplication;}
     public void decideNextAction(String message) {
 
-        if (!activeGame) {
-            System.out.println("Game over. No further actions can be taken.");
-            return;
-        }
-
         ownMessage = "";
         message = message.trim();
         message = message.toLowerCase();
@@ -109,7 +106,18 @@ public class Battleship {
             }
 
         } else if (action == 'h') {//shot hit //ai
-            Platform.runLater(()->helloApplication.updateOpponentBoard(action));
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(()-> {
+                helloApplication.updateOpponentBoard(action);
+                latch.countDown();
+
+            });
+            try{
+                latch.await();
+
+            } catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+            }
             readCoordinates(message);
             if (ownMessage.equals("game over")){
                 if (serverTurn) {
@@ -134,7 +142,18 @@ public class Battleship {
 
             }
         } else if (action == 'm') {//shot miss //random
-            Platform.runLater(()->helloApplication.updateOpponentBoard(action));
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(()-> {
+                helloApplication.updateOpponentBoard(action);
+                latch.countDown();
+
+            });
+            try{
+                latch.await();
+
+            } catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+            }
             readCoordinates(message);
             if (ownMessage.equals("game over")){
                 if (serverTurn) {
@@ -160,7 +179,18 @@ public class Battleship {
             }
 
         } else if (action == 's') {//shot sänkt //random
-            Platform.runLater(()->helloApplication.updateOpponentBoard(action));
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.runLater(()-> {
+                helloApplication.updateOpponentBoard(action);
+                latch.countDown();
+
+            });
+            try{
+                latch.await();
+
+            } catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+            }
             readCoordinates(message);
             if (ownMessage.equals("game over")){
                 if (serverTurn) {
@@ -248,10 +278,11 @@ public class Battleship {
 
             for (int i = 0; i < shipList.size(); i++) {
                 //List<Integer> shipCoordinates = shipList.get(i).getCoordinatesOfShip();
-                for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size()-1; j += 2) {
-                    if (j + 1 <= shipList.get(i).getCoordinatesOfShip().size()) {
+                for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j += 2) {
+                    if (j + 1 < shipList.get(i).getCoordinatesOfShip().size()) {
                         if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
                             shipList.get(i).setHits(1);
+                            System.out.println("Ship "+shipList.get(i).getName()+" now has "+shipList.get(i).getHits()+" damage out of "+shipList.get(i).getLength());
                             /*try{shipList.get(i).getCoordinatesOfShip().remove(j+0);
                             shipList.get(i).getCoordinatesOfShip().remove(j+0);
                             }catch (IndexOutOfBoundsException e){
@@ -259,17 +290,19 @@ public class Battleship {
                             }*/
                             if (shipList.get(i).isSunk()){
                                 ownMessage = "s shot ";
-                                for (int k=0; k < shipList.get(i).getCoordinatesOfShip().size()-1; k+=2){
+                                System.out.println("Ship "+shipList.get(i).getName()+" is sunk for "+System.getProperty("appMode"));
+                                map[list.get(0)][list.get(1)] = "sunk";
+                                int finalI = i;
+                                Platform.runLater(() -> helloApplication.updateOwnGameBoard(list.get(0), list.get(1),shipList.get(finalI).getCoordinatesOfShip()));
+                                /*for (int k=0; k < shipList.get(i).getCoordinatesOfShip().size(); k+=2){
                                     int y = shipList.get(i).getCoordinatesOfShip().get(k);
                                     int x = shipList.get(i).getCoordinatesOfShip().get(k+1);
-                                    map[y][x] = "sunk";
-                                    int finalI = i;
-                                    Platform.runLater(() -> helloApplication.updateOwnGameBoard(list.get(0), list.get(1),shipList.get(finalI).getCoordinatesOfShip()));
-
-                                }
 
 
-                            System.out.println("Ship "+shipList.get(i).getName()+" is sunk for "+System.getProperty("appMode"));
+                                }*/
+
+
+
                             int amountOfSunkShips = 0;
                             for (int k = 0; k < shipList.size(); k++) {
                                 if (shipList.get(k).isSunk()) {
@@ -288,7 +321,6 @@ public class Battleship {
 
                         } else {
                             ownMessage = "h shot ";
-                            shipList.get(i).setHits(1);
                             map[list.get(0)][list.get(1)] = "hit";
                             int finalI1 = i;
                             Platform.runLater(()->helloApplication.updateOwnGameBoard(list.get(0), list.get(1), shipList.get(finalI1).getCoordinatesOfShip()));
