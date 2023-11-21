@@ -1,7 +1,6 @@
 package com.teamd.battleship;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 
 public class ServerMain {
 

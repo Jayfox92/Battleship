@@ -1,80 +1,32 @@
 package com.teamd.battleship;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+
 
 public class HelloApplication extends Application {
-
-
-    Scanner scanner = new Scanner(System.in);
     private Stage primaryStage;
     private String[][] opponentMap = new String[10][10];
-    private Client client;
-    private Server server;
-    private Battleship battleship;
     private int boardSize = 10;
     private GridPane playerBoard;
     private GridPane opponentBoard;
     private int lastYShot;
     private int lastXShot;
-    private char action;
     private Thread thread;
-    public void setThread(){this.thread = thread;
-    }
+    private Battleship battleship;
 
-    public void setAction(char action){
-        this.action = action;
-    }
-    public String[][] getOpponentMap() {
-        return opponentMap;
-    }
 
-    public void setOpponentMap(String[][] opponentMap) {
-        this.opponentMap = opponentMap;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Server getServer() {
-        return server;
-    }
-
-    public void setServer(Server server) {
-        this.server = server;
-    }
-
-    public Battleship getBattleship() {
-        return battleship;
-    }
-
-    public void setBattleship(Battleship battleship) {
-        this.battleship = battleship;
-    }
 
     public static void main(String[] args) {
         launch();
@@ -85,40 +37,33 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         String appMode = System.getProperty("appMode");
-        if (appMode=="client") {
-            Battleship battleship = new Battleship();
-            HelloApplication helloApplication = this;
-            Client client = new Client("initial message", battleship);
-            this.client = client;
+        battleship = new Battleship();
+        battleship.setHelloApplication(this);
+        if (appMode=="klient") {
+            Client client = new Client();
             battleship.setClient(client);
-            battleship.setHelloApplication(helloApplication);
-            helloApplication.setBattleship(battleship);
-            client.setHelloApplication(helloApplication);
-            this.primaryStage = primaryStage;
-            battleship.shipPlacement();
+            client.setHelloApplication(this);
+            client.setBattleShip(battleship);
+
             Platform.runLater(()->{FirstScene();});
-            Thread thread = new Thread(() -> {
+            thread = new Thread(() -> {
                 client.connect();
             });
-            this.thread = thread;
+
 
         }else {
-            Battleship serverShip = new Battleship();
-            HelloApplication javafx = this;
-            Server server = new Server("initial message",serverShip);
-            serverShip.setServer(server);
-            serverShip.setHelloApplication(javafx);
-            javafx.setBattleship(serverShip);
-            server.setHelloApplication(javafx);
-            this.primaryStage = primaryStage;
-            serverShip.shipPlacement();
-            Platform.runLater(()->{FirstScene();});
-            Thread thread = new Thread(()->{
-                server.connect();});
-            this.thread = thread;
+            Server server = new Server();
+            battleship.setServer(server);
+            server.setHelloApplication(this);
+            server.setBattleShip(battleship);
 
+            Platform.runLater(()->{FirstScene();});
+            thread = new Thread(()->{
+                server.connect();});
 
         }
+        this.primaryStage = primaryStage;
+        battleship.shipPlacement();
     }
 
     private void FirstScene() {
@@ -174,31 +119,33 @@ public class HelloApplication extends Application {
         Button startaSpelKnapp = new Button("Starta spel");
         startaSpelKnapp.setOnAction(event -> thread.start());
 
+        Button chooseDelayButton = new Button ("Ändra fördröjning");
+        Platform.runLater(()-> { chooseDelayButton.setOnAction(event -> handleDelay(anchorPane));});
 
 
-        //startaSpelKnapp.setOnAction(event -> handleStartGame(anchorPane,startaSpelKnapp)); // refererar till handleStartGame
         layoutStartGameButton(startaSpelKnapp);
+        layoutChooseDelayButton(chooseDelayButton);
 
 
-        Text playerjag = new Text(appMode+"'s board");
+        Text playerjag = new Text("Egen spelplan");
         playerjag.setLayoutX(165);
         playerjag.setLayoutY(35);
         playerjag.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
-        if (appMode.equals("client")){
-            Text playerMotståndare = new Text("server's board");
+        if (appMode.equals("klient")){
+            Text playerMotståndare = new Text("Motståndarens spelplan");
             playerMotståndare.setLayoutY(35);
             playerMotståndare.setLayoutX(455);
             playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
-            anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, playerjag, playerMotståndare);
+            anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, chooseDelayButton,playerjag, playerMotståndare);
         } else {
-            Text playerMotståndare = new Text("client's board");
+            Text playerMotståndare = new Text("Motståndarens spelplan");
             playerMotståndare.setLayoutY(35);
             playerMotståndare.setLayoutX(455);
             playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
-            anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, playerjag, playerMotståndare);
+            anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, chooseDelayButton,playerjag, playerMotståndare);
         }
 
 
@@ -216,6 +163,10 @@ public class HelloApplication extends Application {
 
     private void layoutStartGameButton(Button startaSpelKnapp) { //gör det enklare
         startaSpelKnapp.setLayoutX(350);
+        startaSpelKnapp.setLayoutY(310);
+    }
+    private void layoutChooseDelayButton(Button startaSpelKnapp) { //gör det enklare
+        startaSpelKnapp.setLayoutX(150);
         startaSpelKnapp.setLayoutY(310);
     }
     private  GridPane opponentPlayerBoard(int size){
@@ -254,25 +205,14 @@ public class HelloApplication extends Application {
             for (int kolumn = 0; kolumn < size; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
 
-
-
-
                 pane.setFill(Color.rgb(0, 204, 204));
                 pane.setStroke(Color.BLACK);
-
-                //StackPane stackPane = new StackPane();
-                //stackPane.getChildren().addAll(pane);
-
-                //Label label = new Label(""); // Gör Tom label för att ta bort siffrorna
-
-                //stackPane.getChildren().addAll(label);
 
                 gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
                 gridPane.requestLayout();
 
                 if (battleship.getMap()[rad][kolumn].contains("s")) {
                     pane.setFill(Color.GREY);
-
                 }
             }
         }
@@ -288,10 +228,8 @@ public class HelloApplication extends Application {
         return gridPane;
     }
     public void storeLastShot(int y, int x){
-
             this.lastYShot = y;
             this.lastXShot = x;
-
     }
     public void updateOpponentBoard(char action){
         Rectangle rectangle = (Rectangle) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
@@ -301,14 +239,10 @@ public class HelloApplication extends Application {
 
         }
         else if (action=='h'){
-            //StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
-            //Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
             rectangle.setFill(Color.RED);
 
         }
         else if (action=='s'){
-            //StackPane pane = (StackPane) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
-            //Rectangle rectangle = (Rectangle) pane.getChildren().get(lastYShot*boardSize+lastXShot);
             rectangle.setFill(Color.RED);
 
         }
@@ -333,43 +267,32 @@ public class HelloApplication extends Application {
 
 
 
-    private void handleStartGame(AnchorPane anchorPane, Button startaSpelKnapp ) {
-        startaSpelKnapp.setVisible(false); // gör så att knappen försvinner
-        System.out.println("Spelet startar");
+    private void handleDelay(AnchorPane anchorPane) {
+
+
 
         TextField delayTextField = new TextField();
         delayTextField.setPromptText("Ange fördröjning i sekunder");
-        delayTextField.setLayoutX(134);
-        delayTextField.setLayoutY(300);
+        delayTextField.setLayoutX(150);
+        delayTextField.setLayoutY(340);
         delayTextField.setPrefSize(220, 20);
         delayTextField.setStyle("-fx-prompt-text-fill: red;");
-
-
-        Button startAutoShotButton = new Button("Starta automatiskt skjutning");
-        startAutoShotButton.setLayoutX(134);
-        startAutoShotButton.setLayoutY(340);
-
-        startAutoShotButton.setOnAction(event -> {
-            String delayText = delayTextField.getText();
-
-            try {
-                int delayInSeconds = Integer.parseInt(delayText);
-
-                // Kontrollera om det är heltal
-                if (delayInSeconds > 0) {
-                    Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(delayInSeconds), e -> {
-                        // LÄGGA TILL automatisk skjutnnig metoden här ?????
-                        System.out.println("Automatisk skjutning efter " + delayInSeconds + " sekunder.");
-                    }));
-                    timeline.play();
-                } else {
-                    System.out.println("Ange ett heltal för fördröjning.");
+        delayTextField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER){
+                String delayAsString = delayTextField.getText();
+                try{
+                    long delay = Long.parseLong(delayAsString);
+                    battleship.setDelay(delay);
+                    delayTextField.setVisible(false);
+                    System.out.println("Fördröjning ändrat till "+delayAsString+" sekunder");
+                } catch (Exception e){
+                    System.out.println("Fel inmatning, försök igen. Heltal krävs utan mellanslag eller liknande.");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Ange ett giltigt heltal för fördröjning.");
+
             }
         });
 
-        anchorPane.getChildren().addAll(delayTextField, startAutoShotButton);
+
+        anchorPane.getChildren().addAll(delayTextField);
     }
 }
