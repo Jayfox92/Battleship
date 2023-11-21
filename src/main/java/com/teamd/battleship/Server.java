@@ -8,18 +8,17 @@ public class Server {
 
     private ServerSocket serverSocket;
     private Socket socket;
-    String ownMessage;
+    private String ownMessage;
     private String opponentMessage;
     private Battleship battleShip;
     private HelloApplication helloApplication;
-    int roundCounter = 0;
-    public Server(String message, Battleship battleship){
-        this.ownMessage = message;
-        this.battleShip = battleship;
-    }
+    private int roundCounter = 0;
+    public Server(){}
+    public void setOwnMessage(String message){this.ownMessage = message;}
     public void setHelloApplication(HelloApplication helloApplication){
         this.helloApplication = helloApplication;
     }
+    public void setBattleShip(Battleship battleship){this.battleShip = battleship;}
 
     public void connect(){
         try {
@@ -30,25 +29,22 @@ public class Server {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-            //battleShip.shipPlacement();
-            for (int i=0; i < 10; i++) {
-                for (int j=0; j < 10; j++){
-                    System.out.print(battleShip.getMap()[i][j]);
-                }
-                System.out.println();
-            }
-
 
             while (battleShip.isActiveGame()){
                 opponentMessage = reader.readLine();
                 System.out.println("opponent message: "+opponentMessage);
-                battleShip.serverTurn = true;
+                battleShip.isServerTurn(true);
                 battleShip.decideNextAction(opponentMessage);
                 System.out.println("own message: "+ownMessage);
                 writer.println(ownMessage);
-                System.out.println("Round "+roundCounter);
                 roundCounter++;
+                System.out.println("Round "+roundCounter);
+
             }
+
+            serverSocket.close();
+
+
 
 
 

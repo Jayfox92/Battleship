@@ -1,39 +1,10 @@
 package com.teamd.battleship;
 
 import javafx.application.Platform;
-
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-
 
 public class Battleship {
-    public Battleship(String message) {
-        this.opponentMessage = message;
-    }
-
-    public Battleship (Server server){
-        this.server = server;
-    }
-    public Battleship (Client client){
-        this.client = client;
-    }
-
-    public Battleship() {
-    }
-
-
-    Ship ship1 = new Ship(5, "s0", "hangarfartyg");
-    Ship ship2 = new Ship(4, "s1", "slagskepp");
-    Ship ship3 = new Ship(4, "s2", "slagskepp");
-    Ship ship4 = new Ship(3, "s3", "kryssare");
-    Ship ship5 = new Ship(3, "s4", "kryssare");
-    Ship ship6 = new Ship(3, "s5", "kryssare");
-    Ship ship7 = new Ship(2, "s6", "ubåt");
-    Ship ship8 = new Ship(2, "s7", "ubåt");
-    Ship ship9 = new Ship(2, "s8", "ubåt");
-    Ship ship10 = new Ship(2, "s9", "ubåt");
-
-
+    public Battleship() {}
     private List<Ship> shipList = new ArrayList<>();
     private Set<String> coordinatesThatHaveBeenShot = new HashSet<>();
     private Client client;
@@ -45,35 +16,14 @@ public class Battleship {
     private int mapSizeY;
     private String water;
     private String ownMessage = "";
-    private String opponentMessage;
     private boolean activeGame = true;
-    boolean serverTurn = true;
+    private boolean serverTurn = true;
+    private long delay =0;
 
     public boolean isActiveGame(){
         return activeGame;
     }
-
-
-    public static void main(String[] args) {
-        Battleship game = new Battleship();
-        // Här kan du använda flottan och implementera resten av spelet
-
-        System.out.println();
-        //shipPlacement();
-    }
-
-    /*{
-            A{"0","1","2","3","4","5","6","7","8","9"},
-            B{"10","11","12","13","14","15","16","17","18","19"},
-            C{"20","21","2-2","","","","","","","",},
-            D{"","","","","","","","","","",},
-            E{"","","","","","","","","","",},
-            F{"","","","","","","","","","",},
-            G{"","","","","","","","","","",},
-            H{"","","","","","","","","","",},
-            I{"","","","","","","","","","",},
-            J{"","","","","","","","","","",},
-    };*/
+    
 
     public void setClient(Client client){
         this.client = client;
@@ -82,51 +32,47 @@ public class Battleship {
         this.server = server;
     }
     public void setHelloApplication(HelloApplication helloApplication){this.helloApplication = helloApplication;}
-    public void decideNextAction(String message) {
+    public void setDelay(long delay){
+        try { this.delay = delay*1000; } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public String[][] getMap() {return map;}
+
+    public void isServerTurn(boolean serverTurn){this.serverTurn=serverTurn;}
+    
+    public void decideNextAction(String message) { 
 
         ownMessage = "";
         message = message.trim();
         message = message.toLowerCase();
         char action = message.charAt(0);
-        if (action == 'i') { //init //random
+        if (action == 'i') {
+            
             readCoordinates(message);
-
-                ownMessage = ownMessage.concat(randomShot());
-
-
-
-
+            ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
-                server.ownMessage = ownMessage;
+                server.setOwnMessage(ownMessage);
                 serverTurn = false;
             } else {
-                client.ownMessage = ownMessage;
+                client.setOwnMessage(ownMessage);
                 serverTurn = true;
-
             }
 
-        } else if (action == 'h') {//shot hit //ai
-            CountDownLatch latch = new CountDownLatch(1);
+        } else if (action == 'h') {
             Platform.runLater(()-> {
                 helloApplication.updateOpponentBoard(action);
-                latch.countDown();
-
             });
-            try{
-                latch.await();
-
-            } catch (InterruptedException e){
-                Thread.currentThread().interrupt();
-            }
+            
             readCoordinates(message);
             if (ownMessage.equals("game over")){
                 if (serverTurn) {
-                    server.ownMessage = ownMessage;
+                    server.setOwnMessage(ownMessage);
                     serverTurn = false;
                     activeGame = false;
                     return;
                 } else {
-                    client.ownMessage = ownMessage;
+                    client.setOwnMessage(ownMessage);
                     serverTurn = true;
                     activeGame = false;
                     return;
@@ -134,35 +80,27 @@ public class Battleship {
             }
             ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
-                server.ownMessage = ownMessage;
+                server.setOwnMessage(ownMessage);
                 serverTurn = false;
             } else {
-                client.ownMessage = ownMessage;
+                client.setOwnMessage(ownMessage);
                 serverTurn = true;
 
             }
-        } else if (action == 'm') {//shot miss //random
-            CountDownLatch latch = new CountDownLatch(1);
+        } else if (action == 'm') {
             Platform.runLater(()-> {
                 helloApplication.updateOpponentBoard(action);
-                latch.countDown();
-
             });
-            try{
-                latch.await();
-
-            } catch (InterruptedException e){
-                Thread.currentThread().interrupt();
-            }
+            
             readCoordinates(message);
             if (ownMessage.equals("game over")){
                 if (serverTurn) {
-                    server.ownMessage = ownMessage;
+                    server.setOwnMessage(ownMessage);
                     serverTurn = false;
                     activeGame = false;
                     return;
                 } else {
-                    client.ownMessage = ownMessage;
+                    client.setOwnMessage(ownMessage);
                     serverTurn = true;
                     activeGame = false;
                     return;
@@ -170,36 +108,27 @@ public class Battleship {
             }
             ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
-                server.ownMessage = ownMessage;
+                server.setOwnMessage(ownMessage);
                 serverTurn = false;
             } else {
-                client.ownMessage = ownMessage;
+                client.setOwnMessage(ownMessage);
                 serverTurn = true;
 
             }
 
-        } else if (action == 's') {//shot sänkt //random
-            CountDownLatch latch = new CountDownLatch(1);
+        } else if (action == 's') {
             Platform.runLater(()-> {
                 helloApplication.updateOpponentBoard(action);
-                latch.countDown();
-
             });
-            try{
-                latch.await();
-
-            } catch (InterruptedException e){
-                Thread.currentThread().interrupt();
-            }
             readCoordinates(message);
             if (ownMessage.equals("game over")){
                 if (serverTurn) {
-                    server.ownMessage = ownMessage;
+                    server.setOwnMessage(ownMessage);
                     serverTurn = false;
                     activeGame = false;
                     return;
                 } else {
-                    client.ownMessage = ownMessage;
+                    client.setOwnMessage(ownMessage);
                     serverTurn = true;
                     activeGame = false;
                     return;
@@ -207,23 +136,23 @@ public class Battleship {
             }
             ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
-                server.ownMessage = ownMessage;
+                server.setOwnMessage(ownMessage);
                 serverTurn = false;
 
             } else {
-                client.ownMessage = ownMessage;
+                client.setOwnMessage(ownMessage);
                 serverTurn = true;
 
             }
 
-        } else if (action == 'g') {//game over
+        } else if (action == 'g') {
             if (serverTurn) {
-                System.out.println(System.getProperty("appMode")+" win, congratulations!");
+                System.out.println(System.getProperty("appMode")+" är vinnaren, bra skjutet!");
                 serverTurn = false;
                 activeGame = false;
 
             } else {
-                System.out.println(System.getProperty("appMode")+ " win, congratulations!");
+                System.out.println(System.getProperty("appMode")+ " är vinnaren, bra skjutet!");
                 serverTurn = true;
                 activeGame = false;
 
@@ -258,17 +187,10 @@ public class Battleship {
         int xCooordinate = Character.getNumericValue(findPosOfX);
         listOfShotCoordinates.add(xCooordinate);
         checkCoordinates(listOfShotCoordinates);
-
     }
 
 
     public void checkCoordinates(List<Integer> list) {
-
-        if (!activeGame) {
-            System.out.println("Game over. No further actions can be taken.");
-            return;
-        }
-
         if (map[list.get(0)][list.get(1)].equals("▓")) {
             ownMessage = "m shot ";
             System.out.println("Found water on map");
@@ -277,53 +199,33 @@ public class Battleship {
             System.out.println("Found ship on map");
 
             for (int i = 0; i < shipList.size(); i++) {
-                //List<Integer> shipCoordinates = shipList.get(i).getCoordinatesOfShip();
                 for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j += 2) {
                     if (j + 1 < shipList.get(i).getCoordinatesOfShip().size()) {
                         if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
                             shipList.get(i).setHits(1);
                             System.out.println("Ship "+shipList.get(i).getName()+" now has "+shipList.get(i).getHits()+" damage out of "+shipList.get(i).getLength());
-                            /*try{shipList.get(i).getCoordinatesOfShip().remove(j+0);
-                            shipList.get(i).getCoordinatesOfShip().remove(j+0);
-                            }catch (IndexOutOfBoundsException e){
-                                System.out.println(e.getMessage());
-                            }*/
-                            if (shipList.get(i).isSunk()){
+                            if (shipList.get(i).isSunk()) {
                                 ownMessage = "s shot ";
                                 System.out.println("Ship "+shipList.get(i).getName()+" is sunk for "+System.getProperty("appMode"));
                                 map[list.get(0)][list.get(1)] = "sunk";
                                 int finalI = i;
                                 Platform.runLater(() -> helloApplication.updateOwnGameBoard(list.get(0), list.get(1),shipList.get(finalI).getCoordinatesOfShip()));
-                                /*for (int k=0; k < shipList.get(i).getCoordinatesOfShip().size(); k+=2){
-                                    int y = shipList.get(i).getCoordinatesOfShip().get(k);
-                                    int x = shipList.get(i).getCoordinatesOfShip().get(k+1);
-
-
-                                }*/
-
-
-
-                            int amountOfSunkShips = 0;
-                            for (int k = 0; k < shipList.size(); k++) {
-                                if (shipList.get(k).isSunk()) {
+                                int amountOfSunkShips = 0;for (int k = 0; k < shipList.size(); k++) {
+                                    if (shipList.get(k).isSunk()) {
                                     amountOfSunkShips++;
-
+                                    }
                                 }
-                            }
-                            System.out.println("Amount of sunken ships is currently "+amountOfSunkShips+" out of 10");
-                            if (amountOfSunkShips >= shipList.size()) {
+                                System.out.println("Amount of sunken ships is currently "+amountOfSunkShips+" out of 10");
+                                if (amountOfSunkShips >= shipList.size()) {
                                 ownMessage = "game over";
                                 System.out.println("All your ships are sunk, you lose. Sorry!");
-
+                                }
+                            }else {
+                                ownMessage = "h shot ";
+                                map[list.get(0)][list.get(1)] = "hit";
+                                int finalI1 = i;
+                                Platform.runLater(()->helloApplication.updateOwnGameBoard(list.get(0), list.get(1), shipList.get(finalI1).getCoordinatesOfShip()));
                             }
-
-                            }
-
-                        } else {
-                            ownMessage = "h shot ";
-                            map[list.get(0)][list.get(1)] = "hit";
-                            int finalI1 = i;
-                            Platform.runLater(()->helloApplication.updateOwnGameBoard(list.get(0), list.get(1), shipList.get(finalI1).getCoordinatesOfShip()));
                         }
                     }
                 }
@@ -331,7 +233,6 @@ public class Battleship {
         } else if (map[list.get(0)][list.get(1)].equals("water")||map[list.get(0)][list.get(1)].equals("hit")||map[list.get(0)][list.get(1)].equals("sunk")){
             System.out.println("Error, same coordinates are shot, we found "+map[list.get(0)][list.get(1)]+" on the map which exist on coordinates "+list.get(0)+" "+list.get(1));
             System.out.println("Check randomShot method for errors");
-
         }
         else {
             System.out.println("Error comparing coordinates to map");
@@ -339,19 +240,13 @@ public class Battleship {
     }
 
 
-    public String[][] getMap() {
-        return map;
-    }
-
-    public List<Ship> getShipList() {
-        return shipList;
-    }
+    
 
     public void shipPlacement() {
 
         // Skapa objekt
 
-        /*Ship ship1 = new Ship(5, "s0", "hangarfartyg");
+        Ship ship1 = new Ship(5, "s0", "hangarfartyg");
         Ship ship2 = new Ship(4, "s1", "slagskepp");
         Ship ship3 = new Ship(4, "s2", "slagskepp");
         Ship ship4 = new Ship(3, "s3", "kryssare");
@@ -360,12 +255,11 @@ public class Battleship {
         Ship ship7 = new Ship(2, "s6", "ubåt");
         Ship ship8 = new Ship(2, "s7", "ubåt");
         Ship ship9 = new Ship(2, "s8", "ubåt");
-        Ship ship10 = new Ship(2, "s9", "ubåt");*/
+        Ship ship10 = new Ship(2, "s9", "ubåt");
 
 
         // Skapa lista + addera objekt
-
-        //List<Ship> shipList = new ArrayList<>();
+        
         shipList.add(ship1);
         shipList.add(ship2);
         shipList.add(ship3);
@@ -512,20 +406,8 @@ public class Battleship {
                         }
                         successfulPlacement = true;
                     }
-
-
                 }
             }
-        }
-
-
-        // Skriva ut kartan
-
-        for (int i = 0; i < mapSizeY; i++) {
-            for (int j = 0; j < mapSizeX; j++) {
-                //System.out.print(map[i][j] + " ");
-            }
-            //System.out.println();
         }
     }
 
@@ -550,11 +432,10 @@ public class Battleship {
             String coordinateY = intsMappedToChar.get(randomY);
             randomX = random.nextInt(10);
             String xAsString = String.valueOf(randomX);
-            randomCoordinates = xAsString + coordinateY;  // Coordinate format: "a0", "b1", etc.
+            randomCoordinates = xAsString + coordinateY;
         } while (coordinatesThatHaveBeenShot.contains(randomCoordinates));
-
-            try{Thread.sleep(1000);}catch (Exception ignore){}
-
+        
+        try{Thread.sleep(delay);}catch (Exception ignore){}
         coordinatesThatHaveBeenShot.add(randomCoordinates);
         int finalRandomY = randomY;
         int finalRandomX = randomX;
@@ -564,20 +445,3 @@ public class Battleship {
         return randomCoordinates;
     }
 }
-
-
-
-
-
-
-// Skapa fler instanser av Skepp om det behövs
-
-
-// Markera skeppens positioner med bokstäver
-
-
-
-//slumpmässigt skott
-
-
-
