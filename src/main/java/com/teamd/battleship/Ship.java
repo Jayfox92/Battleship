@@ -80,7 +80,7 @@ public class Ship {
         this.description = description;
     }
 
-    public void setCoordinatesOfShip(int y, int x){ //sparar koordinaterna där skeppet existerar. index 0 = y, index 1 = x. index 2 = y, index 3 = x osv osv
+    public void setCoordinatesOfShip(int y, int x){
         coordinatesOfShip.add(y);
         coordinatesOfShip.add(x);
     }

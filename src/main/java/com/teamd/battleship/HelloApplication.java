@@ -35,7 +35,7 @@ public class HelloApplication extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) throws Exception { //johann
         String appMode = System.getProperty("appMode");
         battleship = new Battleship();
         battleship.setHelloApplication(this);
@@ -169,7 +169,7 @@ public class HelloApplication extends Application {
         startaSpelKnapp.setLayoutX(150);
         startaSpelKnapp.setLayoutY(310);
     }
-    private  GridPane opponentPlayerBoard(int size){
+    private  GridPane opponentPlayerBoard(int size){ //johann
         GridPane gridPane = new GridPane();
 
 
@@ -196,7 +196,7 @@ public class HelloApplication extends Application {
         return gridPane;
 
     }
-    private GridPane ownPlayerBoard(int size) {
+    private GridPane ownPlayerBoard(int size) { //johann
         GridPane gridPane = new GridPane();
 
 
@@ -227,11 +227,11 @@ public class HelloApplication extends Application {
 
         return gridPane;
     }
-    public void storeLastShot(int y, int x){
+    public void storeLastShot(int y, int x){ //johann
             this.lastYShot = y;
             this.lastXShot = x;
     }
-    public void updateOpponentBoard(char action){
+    public void updateOpponentBoard(char action){ //johann
         Rectangle rectangle = (Rectangle) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
 
         if (action=='m'){
@@ -248,7 +248,7 @@ public class HelloApplication extends Application {
         }
     }
 
-    public void updateOwnGameBoard(int y, int x, List<Integer> listOfCoordinates) {
+    public void updateOwnGameBoard(int y, int x, List<Integer> listOfCoordinates) { //johann
         String[][] newMap = battleship.getMap();
         if (newMap[y][x].equals("hit")) {
             ((Rectangle) playerBoard.getChildren().get(y * boardSize + x)).setFill(Color.RED);
@@ -267,7 +267,7 @@ public class HelloApplication extends Application {
 
 
 
-    private void handleDelay(AnchorPane anchorPane) {
+    private void handleDelay(AnchorPane anchorPane) { //johann
 
 
 
