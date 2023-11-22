@@ -22,33 +22,33 @@ public class Battleship {
 
     public boolean isActiveGame(){
         return activeGame;
-    }
+    } //johann
     
 
     public void setClient(Client client){
         this.client = client;
-    }
+    } //johann
     public void setServer(Server server){
         this.server = server;
-    }
-    public void setHelloApplication(HelloApplication helloApplication){this.helloApplication = helloApplication;}
-    public void setDelay(long delay){
+    } //johann
+    public void setHelloApplication(HelloApplication helloApplication){this.helloApplication = helloApplication;} //johann
+    public void setDelay(long delay){ //johann
         try { this.delay = delay*1000; } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
-    public String[][] getMap() {return map;}
+    public String[][] getMap() {return map;} //johann
 
-    public void isServerTurn(boolean serverTurn){this.serverTurn=serverTurn;}
+    public void isServerTurn(boolean serverTurn){this.serverTurn=serverTurn;} //johann
     
-    public void decideNextAction(String message) { 
+    public void decideNextAction(String message) { //johann
 
         ownMessage = "";
         message = message.trim();
         message = message.toLowerCase();
         char action = message.charAt(0);
         if (action == 'i') {
-            
+
             readCoordinates(message);
             ownMessage = ownMessage.concat(randomShot());
             if (serverTurn) {
@@ -163,7 +163,7 @@ public class Battleship {
     }
 
 
-    public void readCoordinates(String string) { // Y-koordinat lagras i index 0, X-koordinat lagras i index 1, returneras som en arraylist
+    public void readCoordinates(String string) { //johann
         List<Integer> listOfShotCoordinates = new ArrayList<>();
         string = string.trim();
         string = string.toLowerCase();
@@ -190,7 +190,7 @@ public class Battleship {
     }
 
 
-    public void checkCoordinates(List<Integer> list) {
+    public void checkCoordinates(List<Integer> list) { //johann
         if (map[list.get(0)][list.get(1)].equals("▓")) {
             ownMessage = "m shot ";
             System.out.println("Found water on map");
@@ -411,7 +411,7 @@ public class Battleship {
         }
     }
 
-    public String randomShot() {
+    public String randomShot() { //johann
         Random random = new Random();
         Map<Integer, String> intsMappedToChar = new HashMap<>();
         intsMappedToChar.put(0, "a");
