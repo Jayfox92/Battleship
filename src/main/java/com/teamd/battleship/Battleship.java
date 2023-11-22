@@ -3,7 +3,7 @@ package com.teamd.battleship;
 import javafx.application.Platform;
 import java.util.*;
 
-public class Battleship {
+public class Battleship { //henke
     public Battleship() {}
     private List<Ship> shipList = new ArrayList<>();// isaac
     private Set<String> coordinatesThatHaveBeenShot = new HashSet<>();
@@ -245,7 +245,7 @@ public class Battleship {
     public void shipPlacement() { //Petter Lindh
 
         // Skapa objekt
-
+//Henke
         Ship ship1 = new Ship(5, "s0", "hangarfartyg");
         Ship ship2 = new Ship(4, "s1", "slagskepp");
         Ship ship3 = new Ship(4, "s2", "slagskepp");

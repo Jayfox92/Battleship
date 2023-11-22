@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Ship {
 // Petter Lindh (hela klassen)
+// Henric (inprincip hela)
     private int length;
     private int shipX;
     private int shipY;
