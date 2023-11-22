@@ -41,7 +41,7 @@ public class Battleship {
 
     public void isServerTurn(boolean serverTurn){this.serverTurn=serverTurn;} //johann
     
-    public void decideNextAction(String message) { //johann
+    public void decideNextAction(String message) { //johann //Abenezer
 
         ownMessage = "";
         message = message.trim();
@@ -199,9 +199,9 @@ public class Battleship {
             System.out.println("Found ship on map");
 
             for (int i = 0; i < shipList.size(); i++) {
-                for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j += 2) {
+                for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j += 2) {  //Abenezer
                     if (j + 1 < shipList.get(i).getCoordinatesOfShip().size()) {
-                        if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
+                        if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {  //Abenezer
                             shipList.get(i).setHits(1);
                             System.out.println("Ship "+shipList.get(i).getName()+" now has "+shipList.get(i).getHits()+" damage out of "+shipList.get(i).getLength());
                             if (shipList.get(i).isSunk()) {
@@ -427,7 +427,7 @@ public class Battleship {
         String randomCoordinates;
         int randomY;
         int randomX;
-        do {
+        do {       //Abenezer
             randomY = random.nextInt(10);
             String coordinateY = intsMappedToChar.get(randomY);
             randomX = random.nextInt(10);
