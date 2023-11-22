@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Ship {
-
+// Petter Lindh (hela klassen)
     private int length;
     private int shipX;
     private int shipY;

@@ -243,7 +243,7 @@ public class Battleship {
     
 
     public void shipPlacement() {
-
+    // Petter Lindh
         // Skapa objekt
 
         Ship ship1 = new Ship(5, "s0", "hangarfartyg");
