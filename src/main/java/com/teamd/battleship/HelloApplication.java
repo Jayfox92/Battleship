@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 
-public class HelloApplication extends Application {
+public class HelloApplication extends Application { //safa hela klassen
     private Stage primaryStage;
     private String[][] opponentMap = new String[10][10];
     private int boardSize = 10;
@@ -35,7 +35,7 @@ public class HelloApplication extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception { //johann
+    public void start(Stage primaryStage) throws Exception { //johann & start
         String appMode = System.getProperty("appMode");
         battleship = new Battleship();
         battleship.setHelloApplication(this);
@@ -65,8 +65,8 @@ public class HelloApplication extends Application {
         this.primaryStage = primaryStage;
         battleship.shipPlacement();
     }
-    //Safa
-    private void FirstScene() {
+
+    private void FirstScene() { //safa
         String appMode = System.getProperty("appMode");
         primaryStage.setTitle("BattleShip "+appMode);
 
@@ -103,8 +103,8 @@ public class HelloApplication extends Application {
         primaryStage.setScene(welcomeScene);
         primaryStage.show();
     }
-    //Safa
-    private void SecondScene() {
+
+    private void SecondScene() { //safa
         String appMode = System.getProperty("appMode");
         primaryStage.setTitle("BattleShip "+appMode);
 
@@ -200,7 +200,7 @@ public class HelloApplication extends Application {
         return gridPane;
 
     }
-    private GridPane ownPlayerBoard(int size) { //johann
+    private GridPane ownPlayerBoard(int size) { //johann & safa
         GridPane gridPane = new GridPane();
 
 
@@ -271,7 +271,7 @@ public class HelloApplication extends Application {
 
 
 
-    private void handleDelay(AnchorPane anchorPane) { //johann
+    private void handleDelay(AnchorPane anchorPane) { //johann & safa
         TextField delayTextField = new TextField();
         delayTextField.setPromptText("Ange fördröjning i sekunder");
         delayTextField.setLayoutX(150);
