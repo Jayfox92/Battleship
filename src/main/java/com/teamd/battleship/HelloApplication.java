@@ -118,22 +118,22 @@ public class HelloApplication extends Application { //safa hela klassen
 
 
         Button startaSpelKnapp = new Button("Starta spel"); //Safa
-        startaSpelKnapp.setOnAction(event -> thread.start());
+        startaSpelKnapp.setOnAction(event -> thread.start()); //johann
 
-        Button chooseDelayButton = new Button ("Ändra fördröjning");
-        Platform.runLater(()-> { chooseDelayButton.setOnAction(event -> handleDelay(anchorPane));});
+        Button chooseDelayButton = new Button ("Ändra fördröjning"); //johann
+        Platform.runLater(()-> { chooseDelayButton.setOnAction(event -> handleDelay(anchorPane));}); //johann
 
-        //Safa
+
         layoutStartGameButton(startaSpelKnapp);
         layoutChooseDelayButton(chooseDelayButton);
 
-        //Safa
+
         Text playerjag = new Text("Egen spelplan");
         playerjag.setLayoutX(165);
         playerjag.setLayoutY(35);
         playerjag.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
-        if (appMode.equals("klient")){
+        if (appMode.equals("klient")){ //johann
             Text playerMotståndare = new Text("Motståndarens spelplan");
             playerMotståndare.setLayoutY(35);
             playerMotståndare.setLayoutX(455);
@@ -173,7 +173,7 @@ public class HelloApplication extends Application { //safa hela klassen
         startaSpelKnapp.setLayoutY(310);
     }
     //Safa
-    private  GridPane opponentPlayerBoard(int size){ //johann
+    private  GridPane opponentPlayerBoard(int size){ //safa
         GridPane gridPane = new GridPane();
 
 
@@ -200,7 +200,7 @@ public class HelloApplication extends Application { //safa hela klassen
         return gridPane;
 
     }
-    private GridPane ownPlayerBoard(int size) { //johann & safa
+    private GridPane ownPlayerBoard(int size) { //safa
         GridPane gridPane = new GridPane();
 
 
@@ -215,7 +215,7 @@ public class HelloApplication extends Application { //safa hela klassen
                 gridPane.add(pane, kolumn + 1, rad + 1); // Shifted by 1 to make space for labels
                 gridPane.requestLayout();
 
-                if (battleship.getMap()[rad][kolumn].contains("s")) {
+                if (battleship.getMap()[rad][kolumn].contains("s")) { //johann
                     pane.setFill(Color.GREY);
                 }
             }
@@ -235,7 +235,7 @@ public class HelloApplication extends Application { //safa hela klassen
             this.lastYShot = y;
             this.lastXShot = x;
     }
-    public void updateOpponentBoard(char action){ //johann  //Abenezer
+    public void updateOpponentBoard(char action){ //johann  //Abenezer //safa
         Rectangle rectangle = (Rectangle) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
 
         if (action=='m'){
@@ -252,7 +252,7 @@ public class HelloApplication extends Application { //safa hela klassen
         }
     }
 
-    public void updateOwnGameBoard(int y, int x, List<Integer> listOfCoordinates) { //johann //Abenezer
+    public void updateOwnGameBoard(int y, int x, List<Integer> listOfCoordinates) { //johann //Abenezer //safa
         String[][] newMap = battleship.getMap();
         if (newMap[y][x].equals("hit")) {
             ((Rectangle) playerBoard.getChildren().get(y * boardSize + x)).setFill(Color.RED);

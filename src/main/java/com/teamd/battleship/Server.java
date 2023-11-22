@@ -20,7 +20,7 @@ public class Server {
     }
     public void setBattleShip(Battleship battleship){this.battleShip = battleship;}
 
-    public void connect(){ //johann
+    public void connect(){ //johann & abenezer
         try {
             serverSocket = new ServerSocket(8080);
             socket = serverSocket.accept();

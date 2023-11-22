@@ -19,7 +19,7 @@ public class Client {
     public void setOwnMessage(String ownMessage){this.ownMessage = ownMessage;}
 
 
-    public void connect(){ //johann
+    public void connect(){ //johann & abenezer
         try {
             socket = new Socket("localhost", 8080);
             System.out.println("Successful connection");
