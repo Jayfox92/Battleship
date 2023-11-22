@@ -41,7 +41,7 @@ public class Battleship {
 
     public void isServerTurn(boolean serverTurn){this.serverTurn=serverTurn;} //johann
     
-    public void decideNextAction(String message) { //johann
+    public void decideNextAction(String message) { //johann & Abenezer
 
         ownMessage = "";
         message = message.trim();
@@ -199,9 +199,9 @@ public class Battleship {
             System.out.println("Found ship on map");
 
             for (int i = 0; i < shipList.size(); i++) {
-                for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j += 2) {
+                for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j += 2) { //Abenezer
                     if (j + 1 < shipList.get(i).getCoordinatesOfShip().size()) {
-                        if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) { // isaac
+                        if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) { // isaac & //Abenezer
                             shipList.get(i).setHits(1);
                             System.out.println("Ship "+shipList.get(i).getName()+" now has "+shipList.get(i).getHits()+" damage out of "+shipList.get(i).getLength());
                             if (shipList.get(i).isSunk()) {
@@ -242,7 +242,7 @@ public class Battleship {
 
     
 
-    public void shipPlacement() {
+    public void shipPlacement() { //Petter Lindh
 
         // Skapa objekt
 
@@ -411,7 +411,7 @@ public class Battleship {
         }
     }
 
-    public String randomShot() { //johann
+    public String randomShot() { //johann & //Abenezer
         Random random = new Random();
         Map<Integer, String> intsMappedToChar = new HashMap<>();
         intsMappedToChar.put(0, "a");

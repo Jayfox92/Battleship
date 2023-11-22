@@ -140,7 +140,7 @@ public class HelloApplication extends Application { //safa hela klassen
             playerMotståndare.setStyle("-fx-fill: black; -fx-font-size: 25; -fx-font-weight: bold; -fx-font-style: italic;");
 
             anchorPane.getChildren().addAll(playerBoard, opponentBoard, startaSpelKnapp, chooseDelayButton,playerjag, playerMotståndare);
-        } else {
+        } else { //johann
             Text playerMotståndare = new Text("Motståndarens spelplan");
             playerMotståndare.setLayoutY(35);
             playerMotståndare.setLayoutX(455);
@@ -173,11 +173,11 @@ public class HelloApplication extends Application { //safa hela klassen
         startaSpelKnapp.setLayoutY(310);
     }
     //Safa
-    private  GridPane opponentPlayerBoard(int size){ //safa
+    private  GridPane opponentPlayerBoard(int size){ //safa //Abenezer
         GridPane gridPane = new GridPane();
 
 
-        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array //Abenezer
+        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
         for (int rad = 0; rad < size; rad++) {
             for (int kolumn = 0; kolumn < size; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
@@ -200,7 +200,7 @@ public class HelloApplication extends Application { //safa hela klassen
         return gridPane;
 
     }
-    private GridPane ownPlayerBoard(int size) { //safa
+    private GridPane ownPlayerBoard(int size) { //safa //Abenezer
         GridPane gridPane = new GridPane();
 
 
