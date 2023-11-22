@@ -65,7 +65,7 @@ public class HelloApplication extends Application {
         this.primaryStage = primaryStage;
         battleship.shipPlacement();
     }
-
+    //Safa
     private void FirstScene() {
         String appMode = System.getProperty("appMode");
         primaryStage.setTitle("BattleShip "+appMode);
@@ -103,7 +103,7 @@ public class HelloApplication extends Application {
         primaryStage.setScene(welcomeScene);
         primaryStage.show();
     }
-
+    //Safa
     private void SecondScene() {
         String appMode = System.getProperty("appMode");
         primaryStage.setTitle("BattleShip "+appMode);
@@ -116,17 +116,18 @@ public class HelloApplication extends Application {
 
         PositionGameBoards(playerBoard, opponentBoard);
 
-        Button startaSpelKnapp = new Button("Starta spel");
+
+        Button startaSpelKnapp = new Button("Starta spel"); //Safa
         startaSpelKnapp.setOnAction(event -> thread.start());
 
         Button chooseDelayButton = new Button ("Ändra fördröjning");
         Platform.runLater(()-> { chooseDelayButton.setOnAction(event -> handleDelay(anchorPane));});
 
-
+        //Safa
         layoutStartGameButton(startaSpelKnapp);
         layoutChooseDelayButton(chooseDelayButton);
 
-
+        //Safa
         Text playerjag = new Text("Egen spelplan");
         playerjag.setLayoutX(165);
         playerjag.setLayoutY(35);
@@ -154,21 +155,24 @@ public class HelloApplication extends Application {
 
         primaryStage.show();
     }
+    //Safa
     private void PositionGameBoards(GridPane playerOne, GridPane playerTwo) { // här också
         playerOne.setLayoutX(125);
         playerOne.setLayoutY(45);
         playerTwo.setLayoutX(420);
         playerTwo.setLayoutY(45);
     }
-
+    //Safa
     private void layoutStartGameButton(Button startaSpelKnapp) { //gör det enklare
         startaSpelKnapp.setLayoutX(350);
         startaSpelKnapp.setLayoutY(310);
     }
+    //Safa
     private void layoutChooseDelayButton(Button startaSpelKnapp) { //gör det enklare
         startaSpelKnapp.setLayoutX(150);
         startaSpelKnapp.setLayoutY(310);
     }
+    //Safa
     private  GridPane opponentPlayerBoard(int size){ //johann
         GridPane gridPane = new GridPane();
 
@@ -268,9 +272,6 @@ public class HelloApplication extends Application {
 
 
     private void handleDelay(AnchorPane anchorPane) { //johann
-
-
-
         TextField delayTextField = new TextField();
         delayTextField.setPromptText("Ange fördröjning i sekunder");
         delayTextField.setLayoutX(150);
