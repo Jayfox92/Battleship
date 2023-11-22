@@ -18,7 +18,7 @@ public class Battleship {
     private String ownMessage = "";
     private boolean activeGame = true;
     private boolean serverTurn = true;
-    private long delay = 20;
+    private long delay = 1000;
 
     public boolean isActiveGame(){
         return activeGame;
