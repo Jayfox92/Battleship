@@ -5,20 +5,20 @@ import java.util.*;
 
 public class Battleship {
     public Battleship() {}
-    private List<Ship> shipList = new ArrayList<>();
+    private List<Ship> shipList = new ArrayList<>();// isaac
     private Set<String> coordinatesThatHaveBeenShot = new HashSet<>();
     private Client client;
     private Server server;
     private HelloApplication helloApplication;
 
-    private String[][] map;
+    private String[][] map; // isaac
     private int mapSizeX;
     private int mapSizeY;
     private String water;
     private String ownMessage = "";
     private boolean activeGame = true;
     private boolean serverTurn = true;
-    private long delay =0;
+    private long delay = 20;
 
     public boolean isActiveGame(){
         return activeGame;
@@ -33,7 +33,7 @@ public class Battleship {
     } //johann
     public void setHelloApplication(HelloApplication helloApplication){this.helloApplication = helloApplication;} //johann
     public void setDelay(long delay){ //johann
-        try { this.delay = delay*1000; } catch (Exception e){
+        try { this.delay = delay* 1000; } catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
@@ -201,7 +201,7 @@ public class Battleship {
             for (int i = 0; i < shipList.size(); i++) {
                 for (int j = 0; j < shipList.get(i).getCoordinatesOfShip().size(); j += 2) {
                     if (j + 1 < shipList.get(i).getCoordinatesOfShip().size()) {
-                        if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) {
+                        if (shipList.get(i).getCoordinatesOfShip().get(j).equals(list.get(0)) && shipList.get(i).getCoordinatesOfShip().get(j + 1).equals(list.get(1))) { // isaac
                             shipList.get(i).setHits(1);
                             System.out.println("Ship "+shipList.get(i).getName()+" now has "+shipList.get(i).getHits()+" damage out of "+shipList.get(i).getLength());
                             if (shipList.get(i).isSunk()) {
@@ -259,7 +259,7 @@ public class Battleship {
 
 
         // Skapa lista + addera objekt
-        
+        // isaac
         shipList.add(ship1);
         shipList.add(ship2);
         shipList.add(ship3);
@@ -316,7 +316,7 @@ public class Battleship {
 
                 // Kodfält vid horisontell utplacering
 
-                if (horizontalAlignment) {
+                if (horizontalAlignment) { // isaac
 
 
                     // Slumpmässig placering och grundsökområde

@@ -24,6 +24,8 @@ public class Ship {
         return length;
     }
 
+    // Isaac
+
     public boolean GameOver(){
 
         if(isSunk()) {
@@ -84,7 +86,7 @@ public class Ship {
         coordinatesOfShip.add(y);
         coordinatesOfShip.add(x);
     }
-    public List<Integer> getCoordinatesOfShip(){
+    public List<Integer> getCoordinatesOfShip(){ // isaac
         return coordinatesOfShip;
 
     }
