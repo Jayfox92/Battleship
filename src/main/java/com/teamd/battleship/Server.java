@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server {
+public class Server { //johann
 
     private ServerSocket serverSocket;
     private Socket socket;
@@ -20,7 +20,7 @@ public class Server {
     }
     public void setBattleShip(Battleship battleship){this.battleShip = battleship;}
 
-    public void connect(){ //johann & abenezer
+    public void connect(){ // abenezer
         try {
             serverSocket = new ServerSocket(8080);
             socket = serverSocket.accept();

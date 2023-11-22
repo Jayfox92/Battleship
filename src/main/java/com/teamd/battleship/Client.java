@@ -3,7 +3,7 @@ package com.teamd.battleship;
 import java.io.*;
 import java.net.Socket;
 
-public class Client {
+public class Client { //johann
     private Socket socket;
     private String ownMessage;
     private String opponentMessage;
@@ -19,7 +19,7 @@ public class Client {
     public void setOwnMessage(String ownMessage){this.ownMessage = ownMessage;}
 
 
-    public void connect(){ //johann & abenezer
+    public void connect(){ // abenezer
         try {
             socket = new Socket("localhost", 8080);
             System.out.println("Successful connection");

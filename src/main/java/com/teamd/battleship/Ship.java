@@ -82,11 +82,11 @@ public class Ship {
         this.description = description;
     }
 
-    public void setCoordinatesOfShip(int y, int x){
+    public void setCoordinatesOfShip(int y, int x){ //johann
         coordinatesOfShip.add(y);
         coordinatesOfShip.add(x);
     }
-    public List<Integer> getCoordinatesOfShip(){ // isaac
+    public List<Integer> getCoordinatesOfShip(){ //johann & isaac
         return coordinatesOfShip;
 
     }
