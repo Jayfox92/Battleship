@@ -18,7 +18,7 @@ public class Battleship {
     private String ownMessage = "";
     private boolean activeGame = true;
     private boolean serverTurn = true;
-    private long delay =0;
+    private long delay =1000;
 
     public boolean isActiveGame(){
         return activeGame;
@@ -210,7 +210,8 @@ public class Battleship {
                                 map[list.get(0)][list.get(1)] = "sunk";
                                 int finalI = i;
                                 Platform.runLater(() -> helloApplication.updateOwnGameBoard(list.get(0), list.get(1),shipList.get(finalI).getCoordinatesOfShip()));
-                                int amountOfSunkShips = 0;for (int k = 0; k < shipList.size(); k++) {
+                                int amountOfSunkShips = 0;
+                                for (int k = 0; k < shipList.size(); k++) {
                                     if (shipList.get(k).isSunk()) {
                                     amountOfSunkShips++;
                                     }
