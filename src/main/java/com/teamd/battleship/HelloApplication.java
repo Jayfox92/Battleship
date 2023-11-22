@@ -177,7 +177,7 @@ public class HelloApplication extends Application { //safa hela klassen
         GridPane gridPane = new GridPane();
 
 
-        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
+        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array //Abenezer
         for (int rad = 0; rad < size; rad++) {
             for (int kolumn = 0; kolumn < size; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
@@ -188,7 +188,7 @@ public class HelloApplication extends Application { //safa hela klassen
             }
         }
 
-        // Add letters and numbers as labels
+        // Add letters and numbers as labels   //Abenezer
         for (int i = 0; i < size; i++) {
             Text columnLabel = new Text(Integer.toString(i));
             Text rowLabel = new Text(Character.toString(letters[i]));
@@ -204,7 +204,7 @@ public class HelloApplication extends Application { //safa hela klassen
         GridPane gridPane = new GridPane();
 
 
-        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array
+        char[] letters = "ABCDEFGHIJ".toCharArray(); // added char array  //Abenezer
         for (int rad = 0; rad < size; rad++) {
             for (int kolumn = 0; kolumn < size; kolumn++) {
                 Rectangle pane = new Rectangle(22, 22);
@@ -221,7 +221,7 @@ public class HelloApplication extends Application { //safa hela klassen
             }
         }
 
-        // Add letters and numbers as labels
+        // Add letters and numbers as labels   //Abenezer
         for (int i = 0; i < size; i++) {
             Text columnLabel = new Text(Integer.toString(i));
             Text rowLabel = new Text(Character.toString(letters[i]));
@@ -231,11 +231,11 @@ public class HelloApplication extends Application { //safa hela klassen
 
         return gridPane;
     }
-    public void storeLastShot(int y, int x){ //johann
+    public void storeLastShot(int y, int x){ //johann //Abenezer
             this.lastYShot = y;
             this.lastXShot = x;
     }
-    public void updateOpponentBoard(char action){ //johann
+    public void updateOpponentBoard(char action){ //johann  //Abenezer
         Rectangle rectangle = (Rectangle) opponentBoard.getChildren().get(lastYShot*boardSize+lastXShot);
 
         if (action=='m'){
@@ -252,7 +252,7 @@ public class HelloApplication extends Application { //safa hela klassen
         }
     }
 
-    public void updateOwnGameBoard(int y, int x, List<Integer> listOfCoordinates) { //johann
+    public void updateOwnGameBoard(int y, int x, List<Integer> listOfCoordinates) { //johann //Abenezer
         String[][] newMap = battleship.getMap();
         if (newMap[y][x].equals("hit")) {
             ((Rectangle) playerBoard.getChildren().get(y * boardSize + x)).setFill(Color.RED);
